@@ -1,6 +1,7 @@
 package db
 
 import (
+	"database/sql"
 	"idea_app/models"
 	"time"
 )
@@ -30,6 +31,22 @@ func GetAllMemories() ([]*models.Memory, error) {
 		memories = append(memories, m)
 	}
 	return memories, nil
+}
+
+func GetMemoryByID(id string) (*models.Memory, error) {
+	row := DB.QueryRow("SELECT id, title, description, memory_date, is_important FROM memories WHERE id = ?", id)
+	m := &models.Memory{}
+	var d time.Time
+	if err := row.Scan(&m.ID, &m.Title, &m.Description, &d, &m.IsImportant); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+	m.Date = d
+	metaData, _ := GetMetaDataForParent(m.ID, "Memory")
+	m.MetaData = metaData
+	return m, nil
 }
 
 func UpdateMemory(m *models.Memory) error {

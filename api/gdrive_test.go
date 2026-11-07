@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func TestGenerateBackupBlob(t *testing.T) {
+func TestGenerateAndImportBackupBlob(t *testing.T) {
 	if err := db.Initialize(":memory:"); err != nil {
 		t.Fatalf("Failed to init DB: %v", err)
 	}
@@ -70,5 +70,28 @@ func TestGenerateBackupBlob(t *testing.T) {
 	}
 	if len(payload.Memories) != 1 || payload.Memories[0].Title != "Important Memory" {
 		t.Errorf("Expected 1 important memory in backup, got: %d", len(payload.Memories))
+	}
+
+	// 4. Test Import into a fresh clean database
+	db.Close()
+	if err := db.Initialize(":memory:"); err != nil {
+		t.Fatalf("Failed to re-init DB: %v", err)
+	}
+
+	ideasImported, memoriesImported, err := ImportBackupBlob(blob)
+	if err != nil {
+		t.Fatalf("ImportBackupBlob failed: %v", err)
+	}
+	if ideasImported != 1 || memoriesImported != 1 {
+		t.Errorf("Expected 1 idea and 1 memory imported, got %d ideas, %d memories", ideasImported, memoriesImported)
+	}
+
+	// Verify imported idea has its metadata restored
+	restoredIdea, err := db.GetIdeaByID(impIdea.ID)
+	if err != nil || restoredIdea == nil {
+		t.Fatalf("Restored idea not found")
+	}
+	if len(restoredIdea.MetaData) != 1 || restoredIdea.MetaData[0].Title != "Important Idea Sub-Thought" {
+		t.Errorf("Restored metadata missing or incorrect")
 	}
 }

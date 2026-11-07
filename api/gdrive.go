@@ -18,12 +18,12 @@ func GenerateBackupBlob() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	memories, err := db.GetAllMemories()
 	if err != nil {
 		return nil, err
 	}
-	
+
 	var impIdeas []*models.Idea
 	for _, i := range ideas {
 		if i.IsImportant {
@@ -33,7 +33,7 @@ func GenerateBackupBlob() ([]byte, error) {
 			impIdeas = append(impIdeas, i)
 		}
 	}
-	
+
 	var impMemories []*models.Memory
 	for _, m := range memories {
 		if m.IsImportant {
@@ -42,10 +42,56 @@ func GenerateBackupBlob() ([]byte, error) {
 			impMemories = append(impMemories, m)
 		}
 	}
-	
+
 	payload := BackupPayload{Ideas: impIdeas, Memories: impMemories}
-	
+
 	return json.MarshalIndent(payload, "", "  ")
+}
+
+// ImportBackupBlob restores entities from JSON into the database
+func ImportBackupBlob(jsonData []byte) (int, int, error) {
+	var payload BackupPayload
+	if err := json.Unmarshal(jsonData, &payload); err != nil {
+		return 0, 0, fmt.Errorf("invalid backup format: %w", err)
+	}
+
+	ideasImported := 0
+	for _, idea := range payload.Ideas {
+		existing, _ := db.GetIdeaByID(idea.ID)
+		if existing == nil {
+			if err := db.CreateIdea(idea); err == nil {
+				ideasImported++
+			}
+		}
+		restoreMetaData(idea.MetaData, idea.ID, "Idea")
+	}
+
+	memoriesImported := 0
+	for _, mem := range payload.Memories {
+		existing, _ := db.GetMemoryByID(mem.ID)
+		if existing == nil {
+			if err := db.CreateMemory(mem); err == nil {
+				memoriesImported++
+			}
+		}
+		restoreMetaData(mem.MetaData, mem.ID, "Memory")
+	}
+
+	return ideasImported, memoriesImported, nil
+}
+
+func restoreMetaData(metaList []*models.MetaData, parentID string, parentType string) {
+	for _, m := range metaList {
+		m.ParentID = parentID
+		m.ParentType = parentType
+		existing, _ := db.GetMetaDataByID(m.ID)
+		if existing == nil {
+			_ = db.CreateMetaData(m)
+		}
+		if len(m.SubMetaData) > 0 {
+			restoreMetaData(m.SubMetaData, m.ID, "MetaData")
+		}
+	}
 }
 
 // UploadToDrive is a placeholder for the actual OAuth2 drive.v3 API upload.

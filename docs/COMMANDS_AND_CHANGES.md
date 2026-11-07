@@ -1,416 +1,334 @@
-# Comprehensive Project Command Execution & System Changes Log
+# IdeaMapper — Complete Chronological Command & Architecture Log
 
-This document chronicles **every command executed** since the inception of the IdeaMapper project session, detailing parameters passed, their technical significance, and the architectural changes made across the entire stack.
+This document provides a **complete chronological record** of every command executed and architectural change made since the inception of the IdeaMapper project, including reconstructed commands from initial repository commits and the step-by-step session command stream.
 
 ---
 
 ## Table of Contents
-1. [Installations & Dependency Setup](#1-installations--dependency-setup)
-2. [Build, Packaging & Compilation Commands](#2-build-packaging--compilation-commands)
-3. [Database (DB) Changes & Operations](#3-database-db-changes--operations)
-4. [Application Core & AI Changes](#4-application-core--ai-changes)
-5. [UI & UX Component Architecture](#5-ui--ux-component-architecture)
-6. [Environment, Display & Virtualization Diagnostics](#6-environment-display--virtualization-diagnostics)
-7. [Git Version Control & Object Store Maintenance](#7-git-version-control--object-store-maintenance)
-8. [Log of Repeated Commands (Parameters Only)](#8-log-of-repeated-commands-parameters-only)
+1. [Chronological Project Evolution & Reconstructed Setup (Phase 0)](#1-chronological-project-evolution--reconstructed-setup-phase-0)
+2. [Master Chronological Command Log (Phases 1–6)](#2-master-chronological-command-log-phases-16)
+3. [Categorized Breakdown of Changes](#3-categorized-breakdown-of-changes)
+   - [A. Installations & Tooling](#a-installations--tooling)
+   - [B. Build, Packaging & Execution](#b-build-packaging--execution)
+   - [C. Database (DB) & Repository Changes](#c-database-db--repository-changes)
+   - [D. Application Core & AI Integration](#d-application-core--ai-integration)
+   - [E. UI & UX Architecture](#e-ui--ux-architecture)
+   - [F. Diagnostics & Environment Probing](#f-diagnostics--environment-probing)
+   - [G. Git Maintenance & Object Recovery](#g-git-maintenance--object-recovery)
+4. [Log of Repeated Commands (Parameters Only)](#4-log-of-repeated-commands-parameters-only)
 
 ---
 
-## 1. Installations & Dependency Setup
+## 1. Chronological Project Evolution & Reconstructed Setup (Phase 0)
 
-### `go install fyne.io/fyne/v2/cmd/fyne@v2.7.3`
-* **Parameters**:
-  * `fyne.io/fyne/v2/cmd/fyne`: Package import path for the official Fyne CLI tool.
-  * `@v2.7.3`: Pinned release version tag matching `go.mod`.
-* **Significance**:
-  * Downloads, builds, and installs the `fyne` executable to `$HOME/go/bin/fyne`.
-  * Provides the core packaging, app-bundling, and cross-compilation pipeline for desktop and mobile targets (Android APK / iOS).
+From git commit metadata, commit logs, and directory structures, the project evolution prior to this session was reconstructed as follows:
 
-### `ffmpeg -f lavfi -i "color=c=0x4f46e5:s=512x512" -vframes 1 Icon.png -y`
-* **Parameters**:
-  * `-f lavfi`: Libavfilter virtual input device.
-  * `-i "color=c=0x4f46e5:s=512x512"`: Generates an indigo test canvas with dimensions 512×512 (the required resolution for mobile application icons).
-  * `-vframes 1`: Extracts a single video frame.
-  * `Icon.png`: Output filename in the project root.
-  * `-y`: Overwrites without prompt.
-* **Significance**:
-  * Generates the mandatory 512×512 application icon required by the Android packaging pipeline (`fyne package -os android`).
-
-### `chmod +x build_apk.sh`
-* **Parameters**:
-  * `+x`: Adds executable permission bit.
-  * `build_apk.sh`: Target shell script.
-* **Significance**:
-  * Grants direct execute permission to the automated Android APK packaging helper script.
+| Date | Commit / Event | Reconstructed Commands & Actions | Significance |
+| :--- | :--- | :--- | :--- |
+| **Mar 28, 2026** | `cfff065` & `9218787` | `git init`<br>`go mod init idea_app`<br>Created initial files: `main.go`, `models/`, `db/`, `ui/`, `ai/`, `api/`, `README.md` | Initialized repository and laid out base architecture: SQLite database, initial Fyne UI stubs, GenAI idea generation stub, and Google Drive backup stub. |
+| **Mar 28, 2026** | `de2f1eb` | `git merge origin/main` | Merged remote README and project structure. |
+| **Mar 31, 2026** | `3c60d3d` | `go get google.golang.org/genai`<br>`go get fyne.io/fyne/v2`<br>`go get modernc.org/sqlite` | Added and pinned core dependencies in `go.mod` and `go.sum`. |
+| **Sep 23, 2026** | `72ae945` | `go build -o idea_app`<br>*(Ran under root account)*<br>Renamed `Note` to `MetaData` in `models/models.go` | Began refactoring `Note` to `MetaData`. Left `db/note_repo.go`, `db/link_repo.go`, `db/repository_test.go`, and `ai/gemini.go` incomplete and uncompilable, and left root-owned object files in `.git/objects/`. |
 
 ---
 
-## 2. Build, Packaging & Compilation Commands
+## 2. Master Chronological Command Log (Phases 1–6)
 
-### `go build -o idea_app main.go`
-* **Parameters**:
-  * `-o idea_app`: Names the output binary `idea_app` instead of the directory default.
-  * `main.go`: Application entrypoint.
-* **Significance**:
-  * Compiles the complete Go application with CGO and native OpenGL/Weston bindings into an executable binary.
+Below is the chronological execution sequence of every command performed during the session:
 
-### `go build ./...`
-* **Parameters**:
-  * `./...`: Recursive package pattern matching all packages in the project tree.
-* **Significance**:
-  * Validates type checking, syntax, and compilation across all packages (`ai`, `api`, `db`, `models`, `ui`, and root) without emitting binary artifacts.
-
-### `~/go/bin/fyne package --help`
-* **Parameters**:
-  * `--help`: Displays all supported flags and target operating systems.
-* **Significance**:
-  * Inspects flags available for packaging targets (`-os android`, `-appID`, `-icon`, `-name`).
-
-### `~/go/bin/fyne package -os android -appID com.antigravity.ideamemoryapp`
-* **Parameters**:
-  * `package`: Packaging subcommand.
-  * `-os android`: Targets Android OS.
-  * `-appID com.antigravity.ideamemoryapp`: Unique reverse-DNS package identifier for the Android Manifest.
-* **Significance**:
-  * Initiates the Android APK packaging pipeline, resolving dependencies and checking for the presence of the Android NDK and SDK.
-
-### `./idea_app` (Daemon Execution)
-* **Parameters**:
-  * `./idea_app`: Runs the compiled executable.
-  * Executed with `IsDaemon: true`: Runs in the background without blocking terminal execution.
-* **Significance**:
-  * Launches the live GUI app on the active display (`DISPLAY=:0` / `WAYLAND_DISPLAY=wayland-0` via WSLg) in a 400×700 mobile viewport.
-
-### `timeout 3 ./idea_app`
-* **Parameters**:
-  * `3`: Duration in seconds to run before sending `SIGTERM`.
-  * `./idea_app`: Target application executable.
-* **Significance**:
-  * Tested whether the compiled binary launches cleanly and displays without crashing on the headless/WSLg display. Exited with code 124 (timeout), confirming successful continuous execution.
-
----
-
-## 3. Database (DB) Changes & Operations
-
-### Code Changes in `db/`
-* **Recursive Cascade Deletes ([database.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/db/database.go))**:
-  * Replaced `cascade_note_delete` trigger with `cascade_metadata_delete`:
-    ```sql
-    CREATE TRIGGER IF NOT EXISTS cascade_metadata_delete
-    AFTER DELETE ON metaData
-    BEGIN
-        DELETE FROM metaData WHERE parent_id = old.id AND parent_type = 'MetaData';
-    END;
-    ```
-  * Added PRAGMA `recursive_triggers(1)` to SQLite DSN:
-    ```go
-    dsn = "file:memdb1?mode=memory&cache=shared&_pragma=foreign_keys(1)&_pragma=recursive_triggers(1)"
-    ```
-    *Significance*: SQLite disables recursive triggers by default. Enabling this PRAGMA ensures that deleting an Idea or Memory cascades deletes through all 6 levels of nested sub-thoughts.
-* **Repository Alignment ([metadata_repo.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/db/metadata_repo.go))**:
-  * Renamed `db/note_repo.go` to `db/metadata_repo.go`.
-  * Migrated all functions from `models.Note` to `models.MetaData`.
-  * Fixed connection pool deadlocks by reading all `sql.Rows` into a slice and closing the cursor before executing recursive sub-queries.
-* **Entity Lookups ([idea_repo.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/db/idea_repo.go), [memory_repo.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/db/memory_repo.go))**:
-  * Implemented `GetIdeaByID(id string)` and `GetMemoryByID(id string)` with automatic metadata loading.
-* **InterLink Graph Access ([link_repo.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/db/link_repo.go))**:
-  * Added `GetAllInterLinks()` to query all connections for the Mind Map explorer.
-  * Updated `l.LinkNote` to `l.LinkMetaData`.
-
-### Database Commands:
-#### `git mv db/note_repo.go db/metadata_repo.go`
-* **Parameters**:
-  * `db/note_repo.go`: Source file path.
-  * `db/metadata_repo.go`: Destination file path.
-* **Significance**: Renamed repository file while preserving commit history.
-
-#### `go test -v -timeout 10s ./db`
-* **Parameters**:
-  * `-v`: Verbose test reporting.
-  * `-timeout 10s`: Failsafe limit preventing hanging connection deadlocks.
-  * `./db`: Tests only the database repository package.
-* **Significance**: Validated SQL injection resistance, recursive 6-level MetaData creation, Level 7 boundary rejection, and cascade deletion.
-
-#### `ls -la ~/.idea_app 2>/dev/null || true`
-* **Parameters**:
-  * `-la`: Long format including hidden files.
-  * `~/.idea_app`: App directory for local SQLite database.
-* **Significance**: Verified whether a local production database existed before migration.
-
-#### `python3 /home/aditya/.gemini/antigravity-ide/brain/feae06b9-a646-4019-9de5-ad1eea406e53/scratch/seed.py`
-* **Parameters**:
-  * `seed.py`: Python script connecting to `~/.idea_app/app.db`.
-* **Significance**:
-  * Seeded the local SQLite database with realistic sample data:
-    * *"🧠 Mind Mapping System"* with 3 levels of nested sub-thoughts.
-    * *"📱 Mobile Touch Navigation"* Idea.
-    * *"💡 Eureka Moment at Coffee Shop"* and *"🚀 Milestone: Full Refactor Verified"* Memories.
-    * Live InterLinks connecting ideas to memories with relationship labels.
-
-#### `python3 -c "import sqlite3, os ... verify seed ..."`
-* **Parameters**:
-  * `-c`: Python inline execution querying `ideas`, `memories`, and `interlinks` tables.
-* **Significance**: Confirmed that the seed records were written and queryable.
+### Phase 1: Repository Exploration & Gap Analysis (Steps 12–78)
+1. **`git log -n 10 --oneline`**
+   * *Parameters*: `-n 10` (limits output to 10 entries), `--oneline` (compact format).
+   * *Significance*: Inspected commit history to understand past development states.
+2. **`git status; git branch -a`**
+   * *Parameters*: `git status` (working tree status), `git branch -a` (lists all local and remote branches).
+   * *Significance*: Verified clean working tree and identified active branch (`main`).
+3. **`find . -maxdepth 4 -not -path '*/.*'`**
+   * *Parameters*: `-maxdepth 4` (directory traversal depth), `-not -path '*/.*'` (filters out hidden files).
+   * *Significance*: Mapped all project directories and source files across `ai/`, `api/`, `db/`, `models/`, and `ui/`.
+4. **`go test ./...`**
+   * *Parameters*: `./...` (recursive package selector).
+   * *Significance*: Executed all unit tests to detect compile-time failures. Discovered compilation errors in `ai/gemini.go`, `db/note_repo.go`, and `db/link_repo.go`.
+5. **`git log -p -n 5`**
+   * *Parameters*: `-p` (displays patch diff), `-n 5` (last 5 commits).
+   * *Significance*: Examined the exact diffs that introduced the broken refactor.
+6. **`git show 72ae945`**
+   * *Parameters*: `72ae945` (commit hash).
+   * *Significance*: Inspected the commit *"renamed notes to metadata"* to determine which structs and fields were renamed.
+7. **`git log -n 5 --stat`**
+   * *Parameters*: `--stat` (file modification metrics).
+   * *Significance*: Identified files affected across prior commits.
+8. **`git log -n 1 --format=fuller cfff065879822589c67dd76daad654658044dbef`**
+   * *Parameters*: `--format=fuller` (full author and committer dates).
+   * *Significance*: Checked metadata of initial architecture commit.
+9. **`git reflog -n 20; git stash list`**
+   * *Parameters*: `-n 20` (last 20 reflog actions).
+   * *Significance*: Verified that no detached commits or stashes existed.
+10. **`git diff HEAD~1`**
+    * *Parameters*: `HEAD~1` (parent commit comparison).
+    * *Significance*: Analyzed changes between commit `72ae945` and `3c60d3d`.
+11. **`git tag -l; git branch -a; git log --all --grep="requirement" -i`**
+    * *Parameters*: `-l` (list tags), `--grep="requirement" -i` (case-insensitive search).
+    * *Significance*: Searched repository commit messages for requirement documentation.
+12. **`git status --ignored`**
+    * *Parameters*: `--ignored` (shows git-ignored files).
+    * *Significance*: Checked for ignored specification documents or local config files.
 
 ---
 
-## 4. Application Core & AI Changes
-
-### Code Changes in `ai/`, `api/`, `models/`
-* **GenAI SDK Migration ([ai/gemini.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/ai/gemini.go))**:
-  * Migrated from obsolete API calls to `client.Models.GenerateContent(ctx, "gemini-2.5-flash", genai.Text(...), nil)`.
-  * Added `GenerateIdeasWithKey(prompt, apiKey)` allowing the UI settings screen to pass custom API keys with an environment fallback.
-* **Backup Engine ([api/gdrive.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/api/gdrive.go))**:
-  * Implemented `ImportBackupBlob(jsonData []byte)`: Recursively restores snapshot JSON into SQLite, reinstating Ideas, Memories, and nested MetaData hierarchies.
-  * Added `TestGenerateAndImportBackupBlob` in [gdrive_test.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/api/gdrive_test.go).
-
-### Documentation & Diagnostic Commands:
-#### `go doc google.golang.org/genai Client.Models`
-* **Parameters**:
-  * `google.golang.org/genai`: Target package.
-  * `Client.Models`: Field/type to inspect.
-* **Significance**: Inspected the GenAI client structure to identify the Models service reference.
-
-#### `go doc google.golang.org/genai Models.GenerateContent`
-* **Parameters**:
-  * `Models.GenerateContent`: Method signature to inspect.
-* **Significance**: Determined the exact parameter signature `(ctx, model string, contents []*Content, config *GenerateContentConfig)`.
-
-#### `go doc google.golang.org/genai Text`
-* **Parameters**:
-  * `Text`: Helper function.
-* **Significance**: Verified the helper function returning `[]*Content` from raw strings.
-
-#### `go doc google.golang.org/genai GenerateContentResponse`
-* **Parameters**:
-  * `GenerateContentResponse`: Response struct.
-* **Significance**: Identified the response extraction method `func (r *GenerateContentResponse) Text() string`.
-
-#### `go test -v ./api`
-* **Parameters**:
-  * `-v`: Verbose output.
-  * `./api`: Runs tests in the API package.
-* **Significance**: Verified JSON backup generation and roundtrip database restoration.
-
----
-
-## 5. UI & UX Component Architecture
-
-### Components Implemented:
-1. **[idea_detail.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/ui/idea_detail.go)**:
-   * Full detail view for Ideas: title/description editing, star/importance toggle, delete with confirmation, and connected links section.
-   * *"Ask Gemini AI"* button: Generates creative sub-thoughts with Gemini and saves them directly into the metadata tree.
-2. **[memory_detail.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/ui/memory_detail.go)**:
-   * View details of a memory with `YYYY-MM-DD` date picker, editing, deleting, and connected links.
-3. **[metadata_view.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/ui/metadata_view.go)**:
-   * Hierarchical tree renderer supporting 1–6 nested levels.
-   * Indentation rendering with inline buttons: "+ Sub", "+ Attach", "Edit", and "Delete".
-4. **[links_modal.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/ui/links_modal.go)**:
-   * Polymorphic link generator connecting Idea $\leftrightarrow$ Memory, Idea $\leftrightarrow$ Idea, or Memory $\leftrightarrow$ Memory with relationship labels.
-5. **[links_view.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/ui/links_view.go)**:
-   * Dedicated *"Mind Map"* explorer tab showing all connections with bidirectional jump buttons.
-6. **[settings.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/ui/settings.go)**:
-   * Gemini API key input and live test button.
-   * Export/import JSON backup buttons and system statistics.
-7. **[ideas_list.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/ui/ideas_list.go)** & **[memories_list.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/ui/memories_list.go)**:
-   * Added real-time text searching, star filters, and sub-thought/link count badges.
-8. **[layout.go](file:///home/aditya/.gemini/antigravity/scratch/idea_app/ui/layout.go)**:
-   * Configured bottom tab navigation to 4 items: `💡 Ideas`, `💭 Memories`, `🧠 Mind Map`, and `⚙ Settings`.
-
-### UI Commands:
-#### `go doc fyne.io/fyne/v2/theme`
-* **Parameters**:
-  * `fyne.io/fyne/v2/theme`: Fyne theme package.
-* **Significance**: Identified available stock icons (`ContentAddIcon`, `FolderOpenIcon`, `DocumentCreateIcon`, `DeleteIcon`, etc.).
-
-#### `go doc fyne.io/fyne/v2/test`
-* **Parameters**:
-  * `fyne.io/fyne/v2/test`: Fyne testing harness.
-* **Significance**: Checked headless test facilities.
+### Phase 2: Compilation Fixes & Test Suite Alignment (Steps 84–198)
+13. **`go doc google.golang.org/genai Client.Models`**
+    * *Parameters*: Package and struct selector.
+    * *Significance*: Inspected the GenAI client structure to resolve `client.Models.Get` errors.
+14. **`go doc google.golang.org/genai Models.GenerateContent`**
+    * *Parameters*: Target method.
+    * *Significance*: Verified the current signature `(ctx, model string, contents []*Content, config *GenerateContentConfig)`.
+15. **`go doc google.golang.org/genai Text`**
+    * *Parameters*: Helper function name.
+    * *Significance*: Identified helper converting strings into `[]*Content`.
+16. **`go doc google.golang.org/genai GenerateContentResponse`**
+    * *Parameters*: Response struct.
+    * *Significance*: Located the `func (r *GenerateContentResponse) Text() string` extractor.
+17. **`ls -la ~/.idea_app 2>/dev/null || true`**
+    * *Parameters*: `-la` (detailed listing), `2>/dev/null` (suppresses errors).
+    * *Significance*: Verified that no existing local database was present before refactoring schemas.
+18. **`git mv db/note_repo.go db/metadata_repo.go`**
+    * *Parameters*: Source and destination paths.
+    * *Significance*: Renamed repository file to match `models.MetaData` while preserving git history.
+19. **`go test -v ./...`**
+    * *Parameters*: `-v` (verbose test reporting).
+    * *Significance*: Ran test suite; identified SQLite `:memory:` DSN path syntax error (`out of memory (14)`).
+20. **`go test -v ./db`**
+    * *Parameters*: Package path `./db`.
+    * *Significance*: Ran DB tests; diagnosed a connection pool deadlock caused by unclosed `sql.Rows` during recursive queries when `MaxOpenConns=1`.
+21. **`ps aux | grep "go test"`**
+    * *Parameters*: Lists running processes matching `go test`.
+    * *Significance*: Verified the state of the hanging test execution.
+22. **`ps -ef | grep idea_app`**
+    * *Parameters*: Full format process listing.
+    * *Significance*: Checked for lingering background test processes.
+23. **`go test -v -timeout 10s ./db`**
+    * *Parameters*: `-timeout 10s` (enforces execution deadline).
+    * *Significance*: Caught failed cascade delete test where sub-metadata was not deleted due to disabled SQLite recursive triggers.
+24. **`go test -v -timeout 10s ./db`** *(Second invocation)*
+    * *Significance*: Re-tested after adding `_pragma=recursive_triggers(1)` to the SQLite DSN. **Passed in 0.009s**.
+25. **`go test -v ./...`**
+    * *Significance*: Verified that all packages passed unit tests.
+26. **`go build ./...`**
+    * *Significance*: Verified that all packages compiled cleanly.
+27. **`git status`**
+    * *Significance*: Inspected modified files prior to commit.
+28. **`git add . && git commit -m "Fix compilation errors and update unit tests for metadata, links, and triggers"`**
+    * *Significance*: Committed Stage 1 fixes (**Commit `a838ce8`**).
 
 ---
 
-## 6. Environment, Display & Virtualization Diagnostics
-
-### `which adb emulator fyne fyne-cross 2>&1`
-* **Parameters**:
-  * `adb emulator fyne fyne-cross`: Target binaries.
-  * `2>&1`: Merges stderr into stdout.
-* **Significance**: Checked whether Android platform tools were installed in PATH.
-
-### `echo "DISPLAY: $DISPLAY"; echo "WAYLAND_DISPLAY: $WAYLAND_DISPLAY"; which Xvfb; dpkg -l | grep -i -E "android|emulator"`
-* **Parameters**:
-  * Checks environment variables and installed Debian packages for virtualization tools.
-* **Significance**: Confirmed WSLg was using `DISPLAY=:0` (X11) and `wayland-0` (Wayland).
-
-### `ls -la ~/go/bin 2>/dev/null; find ~/.local/ -name "*android*" -o -name "*adb*" 2>/dev/null`
-* **Significance**: Inspected user local binary directories for Go binaries and Android tools.
-
-### `find ~ -maxdepth 3 -iname "*android*" -o -iname "*emulator*" -o -iname "*avd*" 2>/dev/null`
-* **Parameters**:
-  * `-maxdepth 3`: Traverses up to 3 directory levels.
-  * `-iname`: Case-insensitive pattern matching.
-* **Significance**: Checked for user-installed Android SDK, AVD, or emulator directories.
-
-### `snap list 2>/dev/null; flatpak list 2>/dev/null; which scrcpy qemu-system-x86_64 docker 2>&1`
-* **Significance**: Checked for Snap, Flatpak, QEMU, and Docker virtualization runtimes.
-
-### `groups; uname -a; lsb_release -a`
-* **Significance**: Verified user group memberships and confirmed OS is Ubuntu 24.04 on WSL2.
-
-### `ls -la /mnt/c/Users/ /mnt/c/Users/*/AppData/Local/Android/Sdk 2>/dev/null || true`
-* **Significance**: Searched Windows host file mounts for pre-existing Android SDK installations.
-
-### `ls -la /mnt/c/Users/adity/AppData/Local/Android/Sdk 2>/dev/null; which cmd.exe powershell.exe`
-* **Significance**: Checked the primary Windows user directory for Android SDK and validated access to Windows executables.
-
-### `cmd.exe /c "where adb & where emulator" 2>/dev/null || true`
-* **Parameters**:
-  * `/c`: Runs command string and exits.
-* **Significance**: Queried the Windows host PATH for `adb.exe` and `emulator.exe`.
-
-### `powershell.exe -Command 'Get-ChildItem "C:\Program Files", "C:\Program Files (x86)", "$env:LOCALAPPDATA" -Directory -Filter "*Android*" ...'`
-* **Significance**: Checked Windows host Program Files and AppData for Android Studio or BlueStacks.
-
-### `which xwininfo xdotool scrot import grim slurp 2>&1 || true`
-* **Significance**: Checked for screen capture and window inspection utilities. Found `/usr/bin/xwininfo`.
-
-### `which ffmpeg xwd xprop xrandr 2>&1 || true`
-* **Significance**: Checked for media recording tools. Found `/usr/bin/ffmpeg` and `/usr/bin/xprop`.
-
-### `xwininfo -root -tree | head -n 30`
-* **Parameters**:
-  * `-root`: Queries the root window.
-  * `-tree`: Dumps window hierarchy.
-* **Significance**: Confirmed Weston WM was active and accepting X11 client windows.
-
-### `ffmpeg -f x11grab -video_size 1920x1080 -i :0 -vframes 1 .../screen.png -y`
-* **Parameters**:
-  * `-f x11grab`: Captures X11 display.
-  * `-video_size 1920x1080`: Resolution of root display.
-  * `-i :0`: Display identifier.
-  * `-vframes 1`: Grabs single frame.
-* **Significance**: Captured a screenshot of the X11 server output.
-
-### Python Socket Checks for Port 5037, 5554, 5555
-* **Parameters**:
-  * Target hosts: `127.0.0.1` and `172.30.128.1` (WSL default gateway host).
-  * Target ports: `5037` (ADB server), `5554`/`5555` (Android emulator console & ADB).
-* **Significance**: Checked if an Android emulator or ADB daemon was running on either the Linux or Windows side.
-
-### `docker version; docker info 2>&1 | head -n 10`
-* **Significance**: Checked if the Docker daemon was active for containerized `fyne-cross` builds.
-
-### `curl -sI https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip | head -n 5`
-* **Parameters**:
-  * `-s`: Silent mode.
-  * `-I`: HEAD request (headers only).
-* **Significance**: Tested network connectivity to Google's official Android repository.
-
-### `java -version 2>&1; javac -version 2>&1 || true`
-* **Significance**: Verified available Java JDK/JRE runtimes. Found JRE 21 installed, but `javac` missing.
-
-### `ls -la /mnt/` & `ls -la /mnt/d /mnt/e`
-* **Significance**: Inspected all mounted Windows physical and logical drives.
+### Phase 3: Core Features, Detail Views, Mind Map & Settings UI (Steps 208–300)
+29. **`go test ./...`**
+    * *Significance*: Sanity check on test suite.
+30. **`go doc fyne.io/fyne/v2/theme`**
+    * *Significance*: Inspected available stock icons (`ContentAddIcon`, `FolderOpenIcon`, `DocumentCreateIcon`, `DeleteIcon`, etc.).
+31. **`go test -v ./api`**
+    * *Significance*: Tested JSON backup generation and roundtrip database restoration. Passed in 0.011s.
+32. **`go build ./...`**
+    * *Significance*: Tested compilation of new UI files; caught missing `models` package import in `links_view.go`.
+33. **`go build ./...`** *(After import fix)*
+    * *Significance*: Clean compilation with 0 warnings or errors.
+34. **`go test -v ./...`**
+    * *Significance*: Confirmed test suite remained green.
+35. **`go doc fyne.io/fyne/v2/test`**
+    * *Significance*: Checked Fyne headless testing capabilities.
+36. **`go build -o idea_app main.go`**
+    * *Parameters*: `-o idea_app` (output binary name).
+    * *Significance*: Built the standalone executable binary.
+37. **`git status`**
+    * *Significance*: Reviewed untracked UI component files.
+38. **`git add . && git commit -m "Implement detail views..."`**
+    * *Significance*: Failed with `error: insufficient permission for adding an object to repository database .git/objects` due to root-owned folders created during commit `72ae945`.
+39. **`ls -ld .git .git/objects .git/objects/*`**
+    * *Significance*: Identified that 18 subdirectories in `.git/objects` were owned by `root:root` with mode `755`.
+40. **`find .git -user root`**
+    * *Significance*: Enumerated all root-owned files and folders within `.git`.
+41. **`python3 -c "import os, shutil ..."`** *(Migration attempt 1)*
+    * *Significance*: Encountered permission error when attempting to delete files inside root-owned directory.
+42. **`sudo -n chmod -R ugo+rwX .git`**
+    * *Parameters*: `-n` (non-interactive sudo).
+    * *Significance*: Confirmed passwordless sudo was not enabled.
+43. **`ls -la .git/objects/50*`**
+    * *Significance*: Verified that renaming within `.git/objects` succeeded because user `aditya` owned the parent directory.
+44. **`ls -ld .git .git/root_backup .git/objects/50_tmp`**
+    * *Significance*: Checked backup directory permissions.
+45. **`mv .git/objects/50_tmp .git/objects/bak_50_tmp`**
+    * *Significance*: Tested atomic rename within the same parent folder.
+46. **`python3 -c "import os, shutil ..."`** *(Migration attempt 2)*
+    * *Significance*: Successfully renamed all 18 root-owned directories (`3c`, `a3`, `8e`, `23`, `a4`, `b3`, `bd`, `77`, `bf`, `0e`, `40`, `ca`, `21`, `90`, `11`, `a9`, `e6`, `72`), created fresh directories owned by `aditya:aditya`, and copied all object blobs.
+47. **`git fsck --full`**
+    * *Parameters*: `--full` (verifies every object in database).
+    * *Significance*: Verified that the repository database had 100% integrity.
+48. **`git status`**
+    * *Significance*: Checked staging area.
+49. **`git add . && git commit -m "Implement detail views, hierarchical metadata, interlinks mind map, Gemini integration, and backup UI"`**
+    * *Significance*: Committed Stage 2 UI and feature implementations (**Commit `32aa598`**).
+50. **`git log -n 3 --oneline`**
+    * *Significance*: Verified commit tree.
+51. **`go test -v ./...`**
+    * *Significance*: Confirmed clean test pass across all modules.
 
 ---
 
-## 7. Git Version Control & Object Store Maintenance
-
-### `git log -n 10 --oneline`
-* **Parameters**:
-  * `-n 10`: Limits log to the 10 most recent commits.
-  * `--oneline`: Compact single-line formatting (`<hash> <subject>`).
-* **Significance**: Inspected project commit history at session start.
-
-### `find . -maxdepth 4 -not -path '*/.*'`
-* **Parameters**:
-  * `-maxdepth 4`: Traversal depth.
-  * `-not -path '*/.*'`: Excludes hidden directories (like `.git`).
-* **Significance**: Listed the complete file structure of the project.
-
-### `git log -p -n 5`
-* **Parameters**:
-  * `-p`: Shows code diff alongside commit metadata.
-  * `-n 5`: Limits to 5 commits.
-* **Significance**: Inspected architectural diffs introduced in past commits.
-
-### `git show 72ae945`
-* **Parameters**:
-  * `72ae945`: Target commit hash.
-* **Significance**: Detailed inspection of the commit that began renaming `Note` to `MetaData`.
-
-### `git log -n 5 --stat`
-* **Parameters**:
-  * `--stat`: Appends file modification statistics (insertions/deletions).
-* **Significance**: Identified files affected across previous commits.
-
-### `git log -n 1 --format=fuller cfff065879822589c67dd76daad654658044dbef`
-* **Parameters**:
-  * `--format=fuller`: Displays author, author date, committer, and commit date.
-* **Significance**: Inspected the repository's initial commit.
-
-### `git reflog -n 20; git stash list`
-* **Significance**: Checked repository reflog and stash stack for detached or uncommitted work.
-
-### `git diff HEAD~1`
-* **Parameters**:
-  * `HEAD~1`: Compares current HEAD with its direct parent.
-* **Significance**: Inspected unstaged or intermediate differences.
-
-### `git tag -l; git branch -a; git log --all --grep="requirement" -i`
-* **Parameters**:
-  * `git tag -l`: Lists tags.
-  * `git branch -a`: Lists local and remote branches.
-  * `--grep="requirement" -i`: Case-insensitive search of commit messages for requirements notes.
-* **Significance**: Searched for requirement references across branches and tags.
-
-### `git status --ignored`
-* **Parameters**:
-  * `--ignored`: Lists files matching `.gitignore` patterns.
-* **Significance**: Checked for hidden or untracked configuration documents.
-
-### Object Directory Permission Migration Script
-Because previous commits (`72ae945`, `3c60d3d`) were committed by `root`, several subdirectories in `.git/objects` were owned by `root:root` with mode `755`, preventing non-root user `aditya` from inserting new git objects.
-
-**Executed Python Migration Command**:
-```bash
-python3 -c "
-import os, shutil
-
-git_objs = '.git/objects'
-for name in os.listdir(git_objs):
-    p = os.path.join(git_objs, name)
-    if os.path.isdir(p) and len(name) == 2:
-        st = os.stat(p)
-        if st.st_uid != os.getuid():
-            bak_p = os.path.join(git_objs, 'rootbak_' + name)
-            os.rename(p, bak_p)
-            os.makedirs(p, mode=0o775)
-            for f in os.listdir(bak_p):
-                shutil.copy2(os.path.join(bak_p, f), os.path.join(p, f))
-"
-```
-* **Significance**:
-  * Since user `aditya` owned `.git/objects/`, renaming the root-owned subdirectories within the same directory was permitted by the POSIX filesystem.
-  * Recreated clean directories with `aditya:aditya` ownership and copied the object files, restoring write permissions without requiring `sudo`.
-
-### `git fsck --full`
-* **Parameters**:
-  * `--full`: Thoroughly verifies the connectivity and validity of all objects in the database.
-* **Significance**: Confirmed repository consistency (100% object directory check passed).
-
-### `git add . && git commit -m "..."`
-* **Commit 1 (`a838ce8`)**: *"Fix compilation errors and update unit tests for metadata, links, and triggers"*
-* **Commit 2 (`32aa598`)**: *"Implement detail views, hierarchical metadata, interlinks mind map, Gemini integration, and backup UI"*
-* **Commit 3 (`7c24a61`)**: *"Add build_apk.sh helper script and Icon.png for Android packaging"*
-* **Commit 4 (`f112821`)**: *"Add documentation of executed commands, parameters, and architectural changes"*
+### Phase 4: Virtual Android Diagnostics & Live Demo (Steps 304–357)
+52. **`which adb emulator fyne fyne-cross 2>&1; echo "ANDROID_HOME: $ANDROID_HOME"; echo "ANDROID_SDK_ROOT: $ANDROID_SDK_ROOT"; ls -ld ~/Android ~/Android/Sdk ~/.android /opt/android* 2>/dev/null || true`**
+    * *Significance*: Checked for presence of Android platform tools and SDK environment variables in Linux.
+53. **`echo "DISPLAY: $DISPLAY"; echo "WAYLAND_DISPLAY: $WAYLAND_DISPLAY"; which Xvfb; dpkg -l | grep -i -E "android|emulator"`**
+    * *Significance*: Identified display server setup (`:0` via Xwayland, `wayland-0` via Weston).
+54. **`ls -la ~/go/bin 2>/dev/null; find ~/.local/ -name "*android*" -o -name "*adb*" 2>/dev/null`**
+    * *Significance*: Checked user-installed local binaries for Android tools.
+55. **`find ~ -maxdepth 3 -iname "*android*" -o -iname "*emulator*" -o -iname "*avd*" 2>/dev/null`**
+    * *Significance*: Searched user home for Android SDK or AVD configurations.
+56. **`snap list 2>/dev/null; flatpak list 2>/dev/null; which scrcpy qemu-system-x86_64 docker 2>&1`**
+    * *Significance*: Checked for containerized or virtualized runtimes. Found `/usr/bin/docker`.
+57. **`docker ps 2>/dev/null; docker images 2>/dev/null`**
+    * *Significance*: Probed Docker daemon socket.
+58. **`groups; uname -a; lsb_release -a`**
+    * *Significance*: Verified user group memberships (`aditya adm cdrom sudo dip plugdev users ollama`) and confirmed Ubuntu 24.04 on WSL2.
+59. **`ls -la /mnt/c/Users/ /mnt/c/Users/*/AppData/Local/Android/Sdk 2>/dev/null || true`**
+    * *Significance*: Searched Windows host file mounts for Android SDK.
+60. **`ls -la /mnt/c/Users/adity/AppData/Local/Android/Sdk 2>/dev/null; which cmd.exe powershell.exe`**
+    * *Significance*: Checked primary Windows user directory for Android tools.
+61. **`cmd.exe /c "where adb & where emulator" 2>/dev/null || true`**
+    * *Significance*: Queried Windows host PATH for `adb.exe` and `emulator.exe`.
+62. **`ls -la /mnt/c/Users/adity/AppData/Local/Android 2>/dev/null || true`**
+    * *Significance*: Checked Windows Android folder.
+63. **`ls -la /mnt/c/Users/adity/.android ~/.android 2>/dev/null || true`**
+    * *Significance*: Checked for `.android` AVD configurations on Windows and Linux.
+64. **`powershell.exe -Command 'Get-ChildItem "C:\Program Files", "C:\Program Files (x86)", "$env:LOCALAPPDATA" -Directory -Filter "*Android*" ...'`**
+    * *Significance*: Searched Windows program directories for Android Studio or BlueStacks.
+65. **`which xwininfo xdotool scrot import grim slurp 2>&1 || true`**
+    * *Significance*: Checked for window inspection and screenshot tools. Found `/usr/bin/xwininfo`.
+66. **`which ffmpeg xwd xprop xrandr 2>&1 || true`**
+    * *Significance*: Checked for media recording tools. Found `/usr/bin/ffmpeg` and `/usr/bin/xprop`.
+67. **`./idea_app & APP_PID=$!; sleep 2; xwininfo -root -tree | grep -i "idea" || true; kill $APP_PID 2>/dev/null || true`**
+    * *Significance*: Tested launching GUI app and querying X11 window hierarchy.
+68. **`xwininfo -root -tree | head -n 30`**
+    * *Significance*: Confirmed Weston WM was active on display `:0`.
+69. **`timeout 3 ./idea_app`**
+    * *Significance*: Tested continuous GUI execution; passed with exit code 124 (timeout).
+70. **`mkdir -p .../scratch; ffmpeg -f x11grab ...`**
+    * *Significance*: Grabbed display frame via FFmpeg.
+71. **`./idea_app & APP_PID=$!; sleep 3; ffmpeg -f x11grab ...; kill $APP_PID 2>/dev/null || true`**
+    * *Significance*: Captured screenshot while application was actively running.
+72. **`nc -zv 127.0.0.1 5037 5554 5555 2>&1 || true; WIN_IP=...`**
+    * *Significance*: Probed ADB daemon and emulator networking ports.
+73. **`python3 -c "import socket ..."`** *(Localhost probe)*
+    * *Significance*: Checked ports 5037, 5554, 5555 on 127.0.0.1. All closed.
+74. **`python3 -c "import socket ..."`** *(Windows host probe)*
+    * *Significance*: Checked ports 5037, 5554, 5555 on Windows gateway IP `172.30.128.1`. All closed.
 
 ---
 
-## 8. Log of Repeated Commands (Parameters Only)
+### Phase 5: Android APK Packaging Pipeline & Live Execution (Steps 364–441)
+75. **`python3 -c "import sqlite3, os ... check app.db ..."`**
+    * *Significance*: Verified status of local SQLite database file `~/.idea_app/app.db`.
+76. **`docker version; docker info 2>&1 | head -n 10`**
+    * *Significance*: Checked Docker daemon socket status.
+77. **`cmd.exe /c "docker version" 2>/dev/null || true`**
+    * *Significance*: Checked Docker Desktop status on Windows host.
+78. **`go install fyne.io/fyne/v2/cmd/fyne@v2.7.3`**
+    * *Significance*: Installed Fyne CLI tool to `$HOME/go/bin/fyne`.
+79. **`~/go/bin/fyne package --help`**
+    * *Significance*: Examined packaging flags and options.
+80. **`~/go/bin/fyne package -os android -appID com.antigravity.ideamemoryapp 2>&1 || true`**
+    * *Significance*: First packaging attempt; reported missing `Icon.png`.
+81. **`python3 -c "import PIL ..."`**
+    * *Significance*: Checked for Python image library.
+82. **`ffmpeg -f lavfi -i "color=c=0x4f46e5:s=512x512" -vframes 1 Icon.png -y`**
+    * *Significance*: Generated required 512×512 `Icon.png`.
+83. **`~/go/bin/fyne package -os android -appID com.antigravity.ideamemoryapp`**
+    * *Significance*: Second packaging attempt; reported `no Android NDK found in $ANDROID_HOME/ndk-bundle nor in $ANDROID_NDK_HOME`.
+84. **`curl -sI https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip | head -n 5`**
+    * *Significance*: Verified network access to Google Android repository.
+85. **`java -version 2>&1; javac -version 2>&1 || true`**
+    * *Significance*: Checked JDK status (JRE 21 present, `javac` missing).
+86. **`ls -la /mnt/`**
+    * *Significance*: Checked mounted drive letters (`/mnt/c`, `/mnt/d`, `/mnt/e`, `/mnt/s`).
+87. **`ls -la /mnt/d /mnt/e 2>/dev/null || true`**
+    * *Significance*: Checked for Android SDK on secondary drives.
+88. **`python3 /home/aditya/.gemini/antigravity-ide/brain/feae06b9-a646-4019-9de5-ad1eea406e53/scratch/seed.py`**
+    * *Significance*: Seeded `~/.idea_app/app.db` with sample data (Ideas, Memories, InterLinks, MetaData).
+89. **`python3 -c "import sqlite3 ... verify seed ..."`**
+    * *Significance*: Confirmed seed records were committed and readable.
+90. **`./idea_app`** *(Failed attempt)*
+    * *Significance*: Discovered binary was removed during prior commit cleanups.
+91. **`ls -la /home/aditya/.gemini/antigravity/scratch/idea_app`**
+    * *Significance*: Confirmed absence of compiled binary.
+92. **`go build -o idea_app main.go`**
+    * *Significance*: Rebuilt `idea_app` binary.
+93. **`./idea_app`** *(Daemon)*
+    * *Significance*: Launched live GUI app in 400×700 mobile viewport on desktop display via WSLg.
+94. **`chmod +x build_apk.sh`**
+    * *Significance*: Granted executable permissions to automated APK build script.
+95. **`git add build_apk.sh Icon.png && git commit -m "Add build_apk.sh helper script and Icon.png for Android packaging"`**
+    * *Significance*: Committed Android packaging assets (**Commit `7c24a61`**).
+96. **`git status`**
+    * *Significance*: Verified clean repository status.
+97. **`git add docs/COMMANDS_AND_CHANGES.md && git commit -m "Add documentation..."`**
+    * *Significance*: Committed initial documentation (**Commit `f112821`**).
 
-Below is the complete chronological list of command invocations repeated during iterative verification and diagnostics:
+---
+
+### Phase 6: Documentation Audit & Chronological Synthesis (Steps 445–464)
+98. **`python3 -c "import json ... transcript dump ..."`**
+    * *Significance*: Parsed session transcript to verify every executed command.
+99. **`git add docs/COMMANDS_AND_CHANGES.md && git commit -m "Update docs/COMMANDS_AND_CHANGES.md with complete chronological command log"`**
+    * *Significance*: Committed updated documentation (**Commit `88647e3`**).
+100. **`python3 -c "import json ... transcript dump with timestamps ..."`**
+     * *Significance*: Extracted precise step numbers and ISO timestamps for chronological sequencing.
+
+---
+
+## 3. Categorized Breakdown of Changes
+
+### A. Installations & Tooling
+* **Fyne CLI (`fyne.io/fyne/v2/cmd/fyne@v2.7.3`)**: Installed to `$HOME/go/bin/fyne` for mobile/desktop app bundling.
+* **FFmpeg**: Used as a headless canvas rendering engine to generate `Icon.png` (512×512) and capture display frames.
+* **Automated Packaging Tool ([build_apk.sh](file:///home/aditya/.gemini/antigravity/scratch/idea_app/build_apk.sh))**: Shell script automating Android SDK/NDK path discovery across Linux and Windows mounts.
+
+### B. Build, Packaging & Execution
+* **Compilation**: `go build -o idea_app main.go` produces standalone binary.
+* **Packaging Target**: Configured `fyne package -os android -appID com.antigravity.ideamemoryapp -name "IdeaMapper" -icon Icon.png`.
+* **Execution**: Ran as a background daemon process rendering a 400×700 mobile-dimension window on the user's desktop display via WSLg.
+
+### C. Database (DB) & Repository Changes
+* **Cascade Delete Triggers**: Added trigger `cascade_metadata_delete` and enabled PRAGMA `recursive_triggers(1)` in SQLite DSN to support 6-level cascade deletes.
+* **Connection Pool Deadlock Resolution**: Fixed `GetMetaDataForParent` and `GetInterLinksForSource` by reading rows into memory and closing cursors prior to nested queries.
+* **Repository Migration**: Renamed `note_repo.go` to `metadata_repo.go`, updated struct signatures to `models.MetaData`, added `GetIdeaByID`, `GetMemoryByID`, and `GetAllInterLinks`.
+* **Sample Data Seeding**: Seeded `~/.idea_app/app.db` with sample Ideas, Memories, InterLinks, and 3-level MetaData trees.
+
+### D. Application Core & AI Integration
+* **Gemini GenAI SDK v1.52.0**: Migrated `ai/gemini.go` to `client.Models.GenerateContent(...)` and added support for custom user-configured API keys.
+* **Snapshot Backup Engine**: Implemented `ImportBackupBlob` in `api/gdrive.go` supporting roundtrip export/restore of Ideas, Memories, and nested MetaData trees.
+
+### E. UI & UX Architecture
+* **Full-Screen Detail Screens**: Implemented `ui/idea_detail.go` and `ui/memory_detail.go` with title/description editing, star toggles, delete confirmation, and linked items.
+* **Multi-Level Sub-Thoughts**: Implemented `ui/metadata_view.go` supporting 1–6 nested levels with inline "+ Sub", "+ Attach", "Edit", and "Delete" actions.
+* **Mind Map Explorer**: Implemented `ui/links_view.go` and `ui/links_modal.go` for connecting entities with relationship tags.
+* **Settings & Stats**: Implemented `ui/settings.go` with Gemini API key management, live connection testing, and JSON backup export/import.
+* **Bottom Navigation**: Configured 4 primary tabs in `ui/layout.go`: `💡 Ideas`, `💭 Memories`, `🧠 Mind Map`, and `⚙ Settings`.
+
+### F. Diagnostics & Environment Probing
+* Diagnosed WSL2 Linux environment (`Ubuntu 24.04`), display server (`DISPLAY=:0`, `WAYLAND_DISPLAY=wayland-0`), and host file mounts (`/mnt/c/`).
+* Probed network ports for ADB daemon (`5037`) and Android emulator (`5554`/`5555`) across localhost and Windows gateway (`172.30.128.1`).
+
+### G. Git Maintenance & Object Recovery
+* Resolved permission issue caused by root-owned folders in `.git/objects` using Python POSIX directory migration.
+* Verified 100% repository consistency via `git fsck --full`.
+* Committed stages: `a838ce8`, `32aa598`, `7c24a61`, `f112821`, and `88647e3`.
+
+---
+
+## 4. Log of Repeated Commands (Parameters Only)
+
+Below is the list of commands executed repeatedly during iteration:
 
 1. `git log -n 10 --oneline`
 2. `git status; git branch -a`

@@ -11,8 +11,13 @@ import (
 var DB *sql.DB
 
 func Initialize(dbDir string) error {
-	dbPath := filepath.Join(dbDir, "app.db")
-	dsn := fmt.Sprintf("file:%s?_pragma=foreign_keys(1)", dbPath)
+	var dsn string
+	if dbDir == ":memory:" {
+		dsn = "file:memdb1?mode=memory&cache=shared&_pragma=foreign_keys(1)&_pragma=recursive_triggers(1)"
+	} else {
+		dbPath := filepath.Join(dbDir, "app.db")
+		dsn = fmt.Sprintf("file:%s?_pragma=foreign_keys(1)&_pragma=recursive_triggers(1)", dbPath)
+	}
 	
 	var err error
 	DB, err = sql.Open("sqlite", dsn)
@@ -61,11 +66,11 @@ func createTables() error {
 		);`,
 		`CREATE TABLE IF NOT EXISTS attachments (
 			id TEXT PRIMARY KEY,
-			note_id TEXT NOT NULL,
+			metadata_id TEXT NOT NULL,
 			file_path TEXT NOT NULL,
 			is_photo BOOLEAN DEFAULT 0,
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-			FOREIGN KEY(note_id) REFERENCES metaData(id) ON DELETE CASCADE
+			FOREIGN KEY(metadata_id) REFERENCES metaData(id) ON DELETE CASCADE
 		);`,
 		`CREATE INDEX IF NOT EXISTS idx_metaData_parent ON metaData(parent_id);`,
 		`CREATE INDEX IF NOT EXISTS idx_interlinks_source ON interlinks(source_id);`,
@@ -87,10 +92,10 @@ func createTables() error {
 		BEGIN
 			DELETE FROM metaData WHERE parent_id = old.id AND parent_type = 'InterLink';
 		END;`,
-		`CREATE TRIGGER IF NOT EXISTS cascade_note_delete
+		`CREATE TRIGGER IF NOT EXISTS cascade_metadata_delete
 		AFTER DELETE ON metaData
 		BEGIN
-			DELETE FROM metaData WHERE parent_id = old.id AND parent_type = 'Note';
+			DELETE FROM metaData WHERE parent_id = old.id AND parent_type = 'MetaData';
 		END;`,
 	}
 

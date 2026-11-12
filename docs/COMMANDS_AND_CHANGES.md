@@ -6,7 +6,7 @@ This document provides a **complete chronological record** of every command exec
 
 ## Table of Contents
 1. [Chronological Project Evolution & Reconstructed Setup (Phase 0)](#1-chronological-project-evolution--reconstructed-setup-phase-0)
-2. [Master Chronological Command Log (Phases 1–7)](#2-master-chronological-command-log-phases-17)
+2. [Master Chronological Command Log (Phases 1–8)](#2-master-chronological-command-log-phases-18)
 3. [Categorized Breakdown of Changes](#3-categorized-breakdown-of-changes)
    - [A. Installations & Tooling](#a-installations--tooling)
    - [B. Build, Packaging & Execution](#b-build-packaging--execution)
@@ -16,6 +16,7 @@ This document provides a **complete chronological record** of every command exec
    - [F. Diagnostics & Environment Probing](#f-diagnostics--environment-probing)
    - [G. Git Maintenance & Object Recovery](#g-git-maintenance--object-recovery)
    - [H. Shell Environment & Path Configuration](#h-shell-environment--path-configuration)
+   - [I. Project Relocation & Permanent Workspace Migration](#i-project-relocation--permanent-workspace-migration)
 4. [Log of Repeated Commands (Parameters Only)](#4-log-of-repeated-commands-parameters-only)
 
 ---
@@ -33,7 +34,7 @@ From git commit metadata, commit logs, and directory structures, the project evo
 
 ---
 
-## 2. Master Chronological Command Log (Phases 1–7)
+## 2. Master Chronological Command Log (Phases 1–8)
 
 Below is the chronological execution sequence of every command performed during the session:
 
@@ -387,6 +388,28 @@ Below is the chronological execution sequence of every command performed during 
 
 ---
 
+### Phase 8: Project Migration to Permanent Workspace (Steps 540–560)
+132. **`ls -la /home/aditya/ai_projects`**
+     * *Parameters*: `-la` (detailed listing).
+     * *Significance*: Inspected the user's root development workspace directory (`/home/aditya/ai_projects`) and verified sibling project folders (`pedalrim`, `stable-diffusion-webui-forge`).
+133. **`cp -a /home/aditya/.gemini/antigravity/scratch/idea_app /home/aditya/ai_projects/idea_app`**
+     * *Parameters*: `-a` (archive mode: preserves mode, ownership, timestamps, symlinks, git database, build artifacts, and directory tree).
+     * *Significance*: Transferred the entire IdeaMapper project from Antigravity's scratch directory to the user's permanent project workspace `/home/aditya/ai_projects/idea_app`.
+134. **`ls -la /home/aditya/ai_projects/idea_app`**
+     * *Parameters*: Directory listing.
+     * *Significance*: Verified complete directory structure, checked file sizes (`IdeaMapper.apk` 181 MB, `idea_app` 47 MB), and ensured clean user ownership (`aditya:aditya`).
+135. **`cd /home/aditya/ai_projects/idea_app && git status && git log -n 5 --oneline`**
+     * *Parameters*: Git status and commit history probe.
+     * *Significance*: Confirmed git repository database integrity in the new location; verified all 5 commits and clean working tree on branch `main`.
+136. **`cd /home/aditya/ai_projects/idea_app && go test -v ./...`**
+     * *Parameters*: Package test runner.
+     * *Significance*: Verified that all package unit tests pass in the new path (`idea_app/api` PASS in 0.012s, `idea_app/db` PASS in 0.010s).
+137. **`cd /home/aditya/ai_projects/idea_app && go build -o idea_app main.go`**
+     * *Parameters*: Local compilation test.
+     * *Significance*: Verified that the application compiles cleanly with zero warnings or errors directly inside `/home/aditya/ai_projects/idea_app`.
+
+---
+
 ## 3. Categorized Breakdown of Changes
 
 ### A. Installations & Tooling
@@ -443,6 +466,11 @@ Below is the chronological execution sequence of every command performed during 
   ```
 * Ensures that any terminal launched in Antigravity IDE, bash, or subshells automatically has full access to `sdkmanager`, `adb`, `aapt2`, `zipalign`, and Fyne Android compilation toolchains.
 
+### I. Project Relocation & Permanent Workspace Migration
+* **Permanent Path**: Relocated from temporary scratch path `/home/aditya/.gemini/antigravity/scratch/idea_app` to permanent project directory `/home/aditya/ai_projects/idea_app`.
+* **Fidelity**: Preserved 100% of the repository: git commit history (`a838ce8`, `32aa598`, `7c24a61`, `f112821`, `88647e3`, `f01ca9c`, `ed226b9`), release APK (`IdeaMapper.apk`, 181 MB), desktop binary (`idea_app`), unit tests, icons, shell helpers, and documentation.
+* **Verification**: Verified zero compilation errors and passing unit test suites (`TestGenerateAndImportBackupBlob` and `TestMainDB`) in the new permanent directory.
+
 ---
 
 ## 4. Log of Repeated Commands (Parameters Only)
@@ -495,3 +523,5 @@ Below is the list of commands executed repeatedly during iteration:
 44. `ls -la $HOME/Android/Sdk`
 45. `./build_apk.sh`
 46. `ls -lh /home/aditya/.gemini/antigravity/scratch/idea_app/IdeaMapper.apk`
+47. `ls -la /home/aditya/ai_projects`
+48. `ls -la /home/aditya/ai_projects/idea_app`

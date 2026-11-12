@@ -15,6 +15,7 @@
 ## 📖 Table of Contents
 
 - [Overview & Purpose](#-overview--purpose)
+- [The Origin Story: How "Lifetime Access" Became a Monthly Rental (RIP Mindly)](#-the-origin-story-how-lifetime-access-became-a-monthly-rental-rip-mindly)
 - [Why IdeaMapper? (How Useful It Can Be)](#-why-ideamapper-how-useful-it-can-be)
 - [Key Features](#-key-features)
 - [How to Best Use IdeaMapper (Workflow Guide)](#-how-to-best-use-ideamapper-workflow-guide)
@@ -41,6 +42,32 @@ Human cognition is not a flat list or an isolated set of text files. When we bra
 3. **Deconstruct thoughts hierarchically** up to 6 levels of recursive sub-metadata with attachments.
 4. **Interlink heterogeneous concepts** (Idea ↔ Memory, Idea ↔ Idea, Memory ↔ Memory) into an associative mind map.
 5. **Amplify creativity with AI** by using Google Gemini 2.5 Flash directly inside any thought to spark fresh angles and actionable breakdowns.
+
+---
+
+## ☕ The Origin Story: How "Lifetime Access" Became a Monthly Rental (RIP Mindly)
+
+Once upon a time in the mobile app ecosystem, a bizarre archaic word existed in dictionaries: **"Lifetime"**. It meant something would last, well... your lifetime.
+
+Enter **Mindly** on Android — a genuinely brilliant visual mind-mapping tool that many of us happily opened our wallets for, paying real, hard-earned money to unlock permanent, "lifetime" access. Life was good, brainstorms were visual, and thoughts were safely organized in our pockets.
+
+...Until the modern corporate playbook struck like clockwork:
+
+1. **Step 1: The Midnight Heist.** Unceremoniously yank the beloved original app off the Google Play Store without so much as a courtesy wave goodbye.
+2. **Step 2: The Redefined "Lifetime".** Inform loyal paying customers that their "lifetime" license apparently expired on an arbitrary Tuesday afternoon.
+3. **Step 3: The Downgrade Disguised as an Upgrade.** Launch the glorious **Mindly v2** — a masterclass in modern product management that managed the incredible feat of offering **fewer features** than the original, but with the revolutionary new privilege of paying a recurring **monthly subscription** just to gaze upon your own thoughts! 🤡
+
+Because nothing screams *"frictionless creative thinking"* quite like renting your own synapses back on a recurring installment plan.
+
+### The Anti-Greed Manifesto 📜
+IdeaMapper was forged out of sheer, unadulterated spite against this exact brand of rent-seeking corporate greed. 
+
+- 🚫 **No subscriptions.** Ever.
+- 🚫 **No "v2" rug-pulls.** Your purchase doesn't expire because you bought it with your own freedom.
+- 🚫 **No feature downgrades masquerading as "streamlined UX".**
+- 🚫 **Zero interest in taking advantage of users.** Period.
+
+Your thoughts, ideas, and memories belong in a local SQLite database that sits on **your** device, under **your** control — not in some venture-backed growth model's recurring monthly projection. You paid nothing for this, and you will never be asked to pay rent for your own brain.
 
 ---
 

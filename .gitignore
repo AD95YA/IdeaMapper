@@ -1,0 +1,11 @@
+# Android packaging outputs
+*.apk
+*.aab
+
+# Local binaries
+# idea_app
+
+# OS or editor temporary files
+.DS_Store
+*.tmp
+*.log

@@ -191,3 +191,8 @@
 - **App:** IdeaMapper (`app`)
 - **Command:** `./scripts/build_and_release_apk.sh v1`
 - **Artifact:** `releases/ideamapper-v1.apk` (MAJOR (Permanent Artifact))
+
+### [2026-11-13T14:13:48Z] Build & Publish Android APK (v2)
+- **App:** IdeaMapper (`app`)
+- **Command:** `./scripts/build_and_release_apk.sh v2`
+- **Artifact:** `releases/ideamapper-v2.apk` (MAJOR (Permanent Artifact))

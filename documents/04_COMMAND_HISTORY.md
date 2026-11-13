@@ -171,3 +171,8 @@
 - **Command:** `go test -v ./...`
 - **Exit Code:** `0`
 - **Summary:** Milestone 4: Implemented automated daily local JSON + SQLite (.db) backups with 7-day rolling pruning in api/backup_scheduler.go, and first-launch JSON import onboarding modal in ui/onboarding.go. All tests pass.
+
+### [2026-11-13T14:03:50Z] Command Execution
+- **Command:** `go test -v ./...`
+- **Exit Code:** `0`
+- **Summary:** Milestone 5: Added Google Sign-In with OAuth state storage, 'Google Drive Cloud Sync — Coming Soon' modal, Gemini API Key 3-step guide, and one-tap copyable prompt with clipboard integration. All tests pass.

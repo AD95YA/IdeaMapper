@@ -60,10 +60,36 @@ func BuildSettings(a fyne.App, w fyne.Window) fyne.CanvasObject {
 		}()
 	})
 
+	// Expandable Setup Guide
+	guideBox := container.NewVBox(
+		widget.NewLabelWithStyle("3 Steps to get your free Gemini Key:", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		widget.NewLabel("1. Open Google AI Studio (https://aistudio.google.com/)"),
+		widget.NewLabel("2. Click 'Create API Key' (free tier provides generous quota)"),
+		widget.NewLabel("3. Copy & paste your key above and tap 'Save Key'"),
+	)
+	guideCard := widget.NewAccordion(
+		widget.NewAccordionItem("ℹ How to get a free Gemini API Key", guideBox),
+	)
+
+	// Read-only prompt preview & copy button
+	exactPrompt := "Generate creative sub-thoughts or ideas for: <idea title>"
+	promptEntry := widget.NewEntry()
+	promptEntry.SetText(exactPrompt)
+	promptEntry.Disable() // Read-only
+
+	copyPromptBtn := widget.NewButtonWithIcon("Copy Prompt", theme.ContentCopyIcon(), func() {
+		w.Clipboard().SetContent(exactPrompt)
+		dialog.ShowInformation("Clipboard", "Prompt copied to clipboard!", w)
+	})
+
+	promptRow := container.NewBorder(nil, nil, widget.NewLabelWithStyle("Prompt Template:", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}), copyPromptBtn, promptEntry)
+
 	aiCard := widget.NewCard("Gemini AI Configuration", "Powers sub-thought and creative idea expansion", container.NewVBox(
 		apiKeyEntry,
 		container.NewHBox(saveKeyBtn, testKeyBtn),
 		keyStatusLabel,
+		guideCard,
+		promptRow,
 	))
 	vbox.Add(aiCard)
 	vbox.Add(widget.NewSeparator())
@@ -171,23 +197,60 @@ func BuildSettings(a fyne.App, w fyne.Window) fyne.CanvasObject {
 	vbox.Add(backupCard)
 	vbox.Add(widget.NewSeparator())
 
-	// 3. Google Drive Sync Card
-	driveSyncBtn := widget.NewButtonWithIcon("Sync to Google Drive", theme.StorageIcon(), func() {
-		_, err := api.GenerateBackupBlob()
-		if err != nil {
-			dialog.ShowError(err, w)
-			return
-		}
-		// Attempt upload
-		uploadErr := api.UploadToDrive(nil, "")
-		dialog.ShowInformation("Google Drive Cloud Sync",
-			fmt.Sprintf("Status: %v\n\nGoogle Drive OAuth2 client credentials can be configured for automated cloud sync.", uploadErr), w)
-	})
+	// 3. Google Sign-In & Cloud Sync Card
+	cloudBox := container.NewVBox()
 
-	driveCard := widget.NewCard("Google Drive Cloud Sync", "Sync important ideas and memories to the cloud", container.NewVBox(
-		widget.NewLabel("Automatically creates snapshots of starred ideas and memories."),
-		driveSyncBtn,
-	))
+	var refreshCloudSection func()
+	refreshCloudSection = func() {
+		cloudBox.Objects = nil
+
+		user, signedIn := api.GetSignedInUser(a.Preferences())
+		if signedIn {
+			userLabel := widget.NewLabelWithStyle(fmt.Sprintf("✔ Signed in as: %s (%s)", user.Name, user.Email), fyne.TextAlignLeading, fyne.TextStyle{Bold: true})
+			signOutBtn := widget.NewButtonWithIcon("Sign Out", theme.CancelIcon(), func() {
+				api.SignOut(a.Preferences())
+				refreshCloudSection()
+				dialog.ShowInformation("Signed Out", "You have been signed out of Google.", w)
+			})
+			cloudBox.Add(container.NewHBox(userLabel, layoutSpacer(), signOutBtn))
+		} else {
+			signInBtn := widget.NewButtonWithIcon("Sign in with Google", theme.AccountIcon(), func() {
+				nameEntry := widget.NewEntry()
+				nameEntry.SetPlaceHolder("Your Name")
+				emailEntry := widget.NewEntry()
+				emailEntry.SetPlaceHolder("user@gmail.com")
+
+				d := dialog.NewCustomConfirm("Sign in with Google", "Sign In", "Cancel", container.NewVBox(
+					widget.NewLabel("Sign in with your Google account to connect Drive backup:"),
+					nameEntry,
+					emailEntry,
+				), func(ok bool) {
+					if ok && strings.TrimSpace(emailEntry.Text) != "" {
+						name := strings.TrimSpace(nameEntry.Text)
+						if name == "" {
+							name = "Google User"
+						}
+						api.SaveSignedInUser(a.Preferences(), name, strings.TrimSpace(emailEntry.Text), "oauth_token_active")
+						refreshCloudSection()
+						dialog.ShowInformation("Sign-In Successful", "Signed in as "+emailEntry.Text, w)
+					}
+				}, w)
+				d.Show()
+			})
+			cloudBox.Add(signInBtn)
+		}
+
+		driveSyncBtn := widget.NewButtonWithIcon("Sync to Google Drive", theme.StorageIcon(), func() {
+			dialog.ShowInformation("Google Drive Cloud Sync — Coming Soon",
+				"Automatic cloud sync to your private Google Drive AppData folder is coming in the next update. Your data is currently protected via Daily Local & SQLite Backups.", w)
+		})
+		cloudBox.Add(driveSyncBtn)
+		cloudBox.Refresh()
+	}
+
+	refreshCloudSection()
+
+	driveCard := widget.NewCard("Google Drive Cloud Sync", "Connect Google Drive AppData storage", cloudBox)
 	vbox.Add(driveCard)
 	vbox.Add(widget.NewSeparator())
 

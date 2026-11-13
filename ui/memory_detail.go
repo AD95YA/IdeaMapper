@@ -17,6 +17,9 @@ import (
 
 // ShowMemoryDetail renders the full detail view for a Memory
 func ShowMemoryDetail(a fyne.App, w fyne.Window, memoryID string, onBack func()) {
+	nav := GetNavManager(w)
+	isFirstRender := true
+
 	var renderView func()
 
 	renderView = func() {
@@ -31,9 +34,7 @@ func ShowMemoryDetail(a fyne.App, w fyne.Window, memoryID string, onBack func())
 
 		// Top Bar
 		backBtn := widget.NewButtonWithIcon("Back", theme.NavigateBackIcon(), func() {
-			if onBack != nil {
-				onBack()
-			}
+			nav.Pop()
 		})
 
 		var starIcon fyne.Resource
@@ -108,7 +109,17 @@ func ShowMemoryDetail(a fyne.App, w fyne.Window, memoryID string, onBack func())
 		scroll := container.NewVScroll(body)
 		mainLayout := container.NewBorder(topBar, nil, nil, nil, scroll)
 
-		w.SetContent(mainLayout)
+		if isFirstRender {
+			isFirstRender = false
+			nav.Push(NavEntry{
+				Title:       mem.Title,
+				Breadcrumbs: []string{"💭 Memories", mem.Title},
+				View:        mainLayout,
+				OnBack:      onBack,
+			})
+		} else {
+			nav.UpdateCurrentView(mainLayout)
+		}
 	}
 
 	renderView()

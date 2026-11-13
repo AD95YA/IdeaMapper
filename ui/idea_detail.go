@@ -18,6 +18,9 @@ import (
 
 // ShowIdeaDetail renders the complete detail view for an Idea
 func ShowIdeaDetail(a fyne.App, w fyne.Window, ideaID string, onBack func()) {
+	nav := GetNavManager(w)
+	isFirstRender := true
+
 	var renderView func()
 
 	renderView = func() {
@@ -32,9 +35,7 @@ func ShowIdeaDetail(a fyne.App, w fyne.Window, ideaID string, onBack func()) {
 
 		// Top Bar
 		backBtn := widget.NewButtonWithIcon("Back", theme.NavigateBackIcon(), func() {
-			if onBack != nil {
-				onBack()
-			}
+			nav.Pop()
 		})
 
 		var starIcon fyne.Resource
@@ -108,7 +109,17 @@ func ShowIdeaDetail(a fyne.App, w fyne.Window, ideaID string, onBack func()) {
 		scroll := container.NewVScroll(body)
 		mainLayout := container.NewBorder(topBar, nil, nil, nil, scroll)
 
-		w.SetContent(mainLayout)
+		if isFirstRender {
+			isFirstRender = false
+			nav.Push(NavEntry{
+				Title:       idea.Title,
+				Breadcrumbs: []string{"💡 Ideas", idea.Title},
+				View:        mainLayout,
+				OnBack:      onBack,
+			})
+		} else {
+			nav.UpdateCurrentView(mainLayout)
+		}
 	}
 
 	renderView()

@@ -38,3 +38,4 @@ cat << EOF >> "$TARGET_FILE"
 EOF
 
 echo "✔ Logged command to documents/04_COMMAND_HISTORY.md: '${COMMAND_STR}' (Exit: ${EXIT_CODE})"
+

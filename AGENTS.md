@@ -29,3 +29,4 @@ Before completing ANY turn or concluding any task in this workspace, you MUST en
   - **Polymorphic Integrity:** Enforce metadata hierarchy bounds (`Level` 1..6) and cascade deletions.
   - **Testing:** Every change must pass `go test -v ./...`.
   - **Git Hygiene:** Strictly obey GitHub's 100 MB file limit. NEVER commit `*.apk` or `*.aab` files to git. Keep them ignored via `.gitignore`.
+

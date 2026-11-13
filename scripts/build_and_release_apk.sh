@@ -213,17 +213,17 @@ if [ -f "$CMD_HISTORY_FILE" ]; then
 EOF
 fi
 
-echo "[4/4] Committing and pushing release to GitHub..."
-git add "$TARGET_APK" "scripts/build_and_release_apk.sh"
+echo "[4/4] Committing documentation & scripts to GitHub (APK kept locally per >100MB limit)..."
+echo "ℹ Note: ${TARGET_APK} is kept locally and ignored by .gitignore (strictly adheres to GitHub 100MB limit)."
+git add "scripts/build_and_release_apk.sh"
 [ -f "$CMD_HISTORY_FILE" ] && git add "$CMD_HISTORY_FILE"
-git add -u "$RELEASE_DIR" 2>/dev/null || true
 
 if ! git diff --cached --quiet; then
-    git commit -m "release(${VERSION}): publish ${APP_DISPLAY_NAME} (${TARGET_APK})"
+    git commit -m "release(${VERSION}): build ${APP_DISPLAY_NAME} (${VERSION}) artifacts and update docs"
     git push origin main
-    echo "✔ Pushed ${TARGET_APK} to origin/main."
+    echo "✔ Pushed release documentation and scripts to origin/main."
 else
-    echo "ℹ No new changes to commit."
+    echo "ℹ No new git changes to commit."
 fi
 
 echo "=========================================================="

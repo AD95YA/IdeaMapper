@@ -176,3 +176,8 @@
 - **Command:** `go test -v ./...`
 - **Exit Code:** `0`
 - **Summary:** Milestone 5: Added Google Sign-In with OAuth state storage, 'Google Drive Cloud Sync — Coming Soon' modal, Gemini API Key 3-step guide, and one-tap copyable prompt with clipboard integration. All tests pass.
+
+### [2026-11-13T14:09:50Z] Build & Publish Android APK (v2)
+- **App:** IdeaMapper (`app`)
+- **Command:** `./scripts/build_and_release_apk.sh v2`
+- **Artifact:** `releases/ideamapper-v2.apk` (MAJOR (Permanent Artifact))

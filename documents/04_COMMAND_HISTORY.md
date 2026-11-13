@@ -143,3 +143,11 @@
 63. **`write_file documents/02_SETUP_AND_INSTALLATION.md`** — Exit: `0` | Documented WSL2, Go, Fyne, and Android SDK/NDK setup.
 64. **`write_file documents/03_PROMPTS_AND_DECISIONS.md`** — Exit: `0` | Documented prompt history, ADRs, and technical choices.
 65. **`write_file documents/04_COMMAND_HISTORY.md`** — Exit: `0` | Generated full chronological command log with mandatory update rule.
+66. **`git add .agent/ documents/ scripts/ && git commit -m "docs: add engineering standards..."`** — Exit: `0` | Committed living docs and rules (**Commit `d6aa336`**).
+67. **`git push origin main`** — Exit: `0` | Successfully pushed commit `d6aa336` to GitHub.
+68. **`write_file AGENTS.md & GEMINI.md`** — Exit: `0` | Created root workspace guidelines enforcing mandatory living document updates.
+69. **`write_file scripts/log_command.sh && chmod +x scripts/log_command.sh`** — Exit: `0` | Built command history logging helper script.
+70. **`write_file scripts/hooks/pre_invocation.sh && write_file .agent/hooks.json`** — Exit: `0` | Configured Antigravity lifecycle hooks for pre-invocation documentation reminders.
+71. **`edit_file documents/03_PROMPTS_AND_DECISIONS.md`** — Exit: `0` | Documented Prompt 7 and ADR-07 (Multi-Layered Living Documentation Enforcement).
+
+

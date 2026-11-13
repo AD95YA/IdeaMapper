@@ -148,3 +148,4 @@ adb install -r IdeaMapper.apk
   ```bash
   export GEMINI_API_KEY="your-gemini-api-key"
   ```
+

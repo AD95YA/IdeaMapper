@@ -26,6 +26,10 @@
 > *"create README.md file and give all details about the app and how to best use it... mention that this was specifically created as the Mindly app on android was unceremoniously taken down by its creators... Write this in a more sarcastic and creative manner."*
 - **Outcome:** Authored comprehensive README with 5-step knowledge workflow guide, Antigravity IDE attribution, and the Anti-Greed Manifesto critiquing Mindly's corporate rug-pull. Resolved GitHub 100 MB file limit via `.gitignore` and pushed to GitHub.
 
+### Prompt 7: Living Documentation & Auto-Update Enforcement (Phase 10)
+> *"ensure all these files keep getting auto updated with relevant info for any future work"*
+- **Outcome:** Built a multi-layered automated enforcement architecture: authored root `AGENTS.md` and `GEMINI.md` workspace rules, configured Antigravity lifecycle hooks in `.agent/hooks.json` via `scripts/hooks/pre_invocation.sh`, and provided `scripts/log_command.sh` to ensure all future agent turns and terminal operations continuously update `documents/`.
+
 ---
 
 ## 2. Key Architectural Decisions & Trade-Offs
@@ -59,3 +63,12 @@
 - **Context:** Designing an interface that feels equally native on Android touchscreens and desktop monitors.
 - **Decision:** Configured Fyne `container.NewAppTabs` with `container.TabLocationBottom` (`Ideas`, `Memories`, `Mind Map`, `Settings`) and initialized desktop window dimensions to `400x700`.
 - **Rationale:** Emulates modern mobile UX conventions while scaling cleanly to larger desktop monitors.
+
+### ADR-07: Multi-Layered Living Documentation Enforcement
+- **Context:** Project standards require that files in `documents/` (roadmap, setup, prompts/decisions, command history) remain continuously updated across future development turns without manual prompting.
+- **Decision:** Implemented a three-tiered enforcement architecture:
+  1. **Workspace Agent Rules (`AGENTS.md` & `GEMINI.md`):** Loaded unconditionally into Antigravity's system prompt on every turn, establishing mandatory living documentation rules.
+  2. **Lifecycle Hooks (`.agent/hooks.json`):** Configured a `PreInvocation` hook (`scripts/hooks/pre_invocation.sh`) that injects a persistent workspace directive before every turn.
+  3. **Automated Logging Utilities (`scripts/log_command.sh`):** Provides a 1-line shell script for atomic, formatted appending to `documents/04_COMMAND_HISTORY.md`.
+- **Rationale:** Guarantees that any future AI agent or developer session operating in this repository maintains 100% documentation fidelity and auditability.
+

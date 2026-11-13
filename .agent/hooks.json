@@ -1,0 +1,11 @@
+{
+  "living-docs-reminder": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "./scripts/hooks/pre_invocation.sh",
+        "timeout": 5
+      }
+    ]
+  }
+}

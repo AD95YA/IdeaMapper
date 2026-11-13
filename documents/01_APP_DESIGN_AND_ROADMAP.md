@@ -82,3 +82,4 @@ Human brains think associatively and hierarchically. Standard note-taking softwa
   - Export entire knowledge graphs to standard open formats: Obsidian Markdown Vaults, OPML, GraphML, and printable PDF digests.
 - [ ] **Spatial Planetary Navigation (Mindly Classic Paradigm)**:
   - Implement an orbit-based zoom navigation where clicking a parent node centers it as a sun with child sub-thoughts orbiting around it.
+

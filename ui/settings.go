@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -67,7 +68,49 @@ func BuildSettings(a fyne.App, w fyne.Window) fyne.CanvasObject {
 	vbox.Add(aiCard)
 	vbox.Add(widget.NewSeparator())
 
-	// 2. Local JSON Backup & Restore Card
+	// 2. Automated Daily Local & SQLite Backup Card
+	storageDir := a.Storage().RootURI().Path()
+	if storageDir == "" {
+		userHome, _ := os.UserHomeDir()
+		storageDir = filepath.Join(userHome, ".idea_app")
+	}
+
+	lastBackupTime := a.Preferences().String(api.PrefLastDailyBackupUTC)
+	if lastBackupTime == "" {
+		lastBackupTime = "No automated backup performed yet"
+	}
+	dailyStatusLabel := widget.NewLabel("Last Daily Backup: " + lastBackupTime)
+
+	backupNowBtn := widget.NewButtonWithIcon("Backup Now (JSON + SQLite)", theme.DocumentSaveIcon(), func() {
+		dailyStatusLabel.SetText("Running atomic backup...")
+		go func() {
+			res, err := api.RunDailyBackup(storageDir)
+			if err != nil {
+				dailyStatusLabel.SetText("Backup failed: " + err.Error())
+				dialog.ShowError(err, w)
+			} else {
+				nowStr := time.Now().UTC().Format(time.RFC3339)
+				a.Preferences().SetString(api.PrefLastDailyBackupUTC, nowStr)
+				msg := fmt.Sprintf("Backup successful for %s!\nPruned %d older backups.", res.Date, res.Pruned)
+				dailyStatusLabel.SetText("Last Daily Backup: " + nowStr)
+				dialog.ShowInformation("Backup Complete", msg, w)
+			}
+		}()
+	})
+
+	dailyBackupCard := widget.NewCard(
+		"Automated Daily Local & SQLite Backups",
+		"Rolling 7-day retention of JSON and raw SQLite .db copies",
+		container.NewVBox(
+			widget.NewLabel("Automatically captures snapshots on launch and retains the last 7 daily archives."),
+			container.NewHBox(backupNowBtn),
+			dailyStatusLabel,
+		),
+	)
+	vbox.Add(dailyBackupCard)
+	vbox.Add(widget.NewSeparator())
+
+	// 3. Local JSON Backup & Restore Card
 	backupStatusLabel := widget.NewLabel("")
 
 	exportBtn := widget.NewButtonWithIcon("Export JSON Backup", theme.DownloadIcon(), func() {

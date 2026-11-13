@@ -166,3 +166,8 @@
 - **Command:** `go test -v ./ui`
 - **Exit Code:** `0`
 - **Summary:** Milestone 3: Upgraded Mind Map UI with Rich Box-Drawing ASCII Tree (badges [★], [📝], [🖼️], [⏳]), Radial Orbit view with depth-graded accent colors, and 3-way view switcher in links_view.
+
+### [2026-11-13T14:01:55Z] Command Execution
+- **Command:** `go test -v ./...`
+- **Exit Code:** `0`
+- **Summary:** Milestone 4: Implemented automated daily local JSON + SQLite (.db) backups with 7-day rolling pruning in api/backup_scheduler.go, and first-launch JSON import onboarding modal in ui/onboarding.go. All tests pass.

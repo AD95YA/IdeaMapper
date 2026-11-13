@@ -48,6 +48,32 @@ func GenerateBackupBlob() ([]byte, error) {
 	return json.MarshalIndent(payload, "", "  ")
 }
 
+// GenerateFullBackupBlob extracts all entities (both normal and important) and translates them to JSON
+func GenerateFullBackupBlob() ([]byte, error) {
+	ideas, err := db.GetAllIdeas()
+	if err != nil {
+		return nil, err
+	}
+
+	memories, err := db.GetAllMemories()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, i := range ideas {
+		metaData, _ := db.GetMetaDataForParent(i.ID, "Idea")
+		i.MetaData = metaData
+	}
+
+	for _, m := range memories {
+		metaData, _ := db.GetMetaDataForParent(m.ID, "Memory")
+		m.MetaData = metaData
+	}
+
+	payload := BackupPayload{Ideas: ideas, Memories: memories}
+	return json.MarshalIndent(payload, "", "  ")
+}
+
 // ImportBackupBlob restores entities from JSON into the database
 func ImportBackupBlob(jsonData []byte) (int, int, error) {
 	var payload BackupPayload

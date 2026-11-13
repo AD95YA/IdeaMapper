@@ -52,3 +52,4 @@ func TestGraphicPrimitivePool(t *testing.T) {
 		t.Fatalf("expected released text to be hidden")
 	}
 }
+

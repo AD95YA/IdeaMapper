@@ -35,3 +35,4 @@ func TestGoogleAuthPreferences(t *testing.T) {
 		t.Fatalf("expected signedIn to be false after SignOut")
 	}
 }
+

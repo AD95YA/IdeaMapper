@@ -83,3 +83,4 @@ func TestAsyncImageDecodingAndDownscale(t *testing.T) {
 		t.Fatalf("expected image to be cached in LRU cache")
 	}
 }
+

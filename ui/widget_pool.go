@@ -104,3 +104,4 @@ func (p *GraphicPrimitivePool) ReleaseText(t *canvas.Text) {
 	t.Hidden = true
 	p.textPool.Put(t)
 }
+

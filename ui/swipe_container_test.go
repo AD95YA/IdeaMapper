@@ -77,3 +77,4 @@ func TestEvaluateSwipeTransition_MindMapConflictGuard(t *testing.T) {
 		t.Fatalf("expected header swipe on Mind Map to switch to tab 3, got tab=%d switched=%v", newTab, switched)
 	}
 }
+

@@ -107,3 +107,4 @@ func StartOAuthLoopbackListener(onCodeReceived func(code string, err error)) err
 
 	return nil
 }
+

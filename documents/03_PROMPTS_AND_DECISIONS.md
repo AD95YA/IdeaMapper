@@ -30,6 +30,10 @@
 > *"ensure all these files keep getting auto updated with relevant info for any future work"*
 - **Outcome:** Built a multi-layered automated enforcement architecture: authored root `AGENTS.md` and `GEMINI.md` workspace rules, configured Antigravity lifecycle hooks in `.agent/hooks.json` via `scripts/hooks/pre_invocation.sh`, and provided `scripts/log_command.sh` to ensure all future agent turns and terminal operations continuously update `documents/`.
 
+### Prompt 8: V2 Architecture Upgrade & Mobile Maturation (Phase 11)
+> *"/plan Upgrade our existing V1 codebase of 'Mendu: IdeaMapper' to V2 covering Milestones 1 through 6: mobile navigation, performance optimization, upgraded mind map UI, daily backups & onboarding restore, Google Sign-In & Gemini onboarding, and edge-case unit tests & V2 APK release."*
+- **Outcome:** Delivered all 6 milestones with zero regressions. All unit tests pass with Go race detector (`go test -v -race ./...`). Generated `releases/ideamapper-v2.apk`.
+
 ---
 
 ## 2. Key Architectural Decisions & Trade-Offs
@@ -71,4 +75,14 @@
   2. **Lifecycle Hooks (`.agent/hooks.json`):** Configured a `PreInvocation` hook (`scripts/hooks/pre_invocation.sh`) that injects a persistent workspace directive before every turn.
   3. **Automated Logging Utilities (`scripts/log_command.sh`):** Provides a 1-line shell script for atomic, formatted appending to `documents/04_COMMAND_HISTORY.md`.
 - **Rationale:** Guarantees that any future AI agent or developer session operating in this repository maintains 100% documentation fidelity and auditability.
+
+### ADR-08: V2 Mobile Navigation, Performance Culling & Active Orbits
+- **Context:** V1 lacked hierarchical breadcrumb tracking, gesture tab switching had potential conflicts with graph panning, and deep 6-level trees risked UI allocation spikes on mobile devices.
+- **Decision:**
+  1. Implemented `NavigationManager` with `container.NewHScroll` breadcrumbs and Android hardware back hook mapping `KeyEscape` to stack pop rather than application exit.
+  2. Designed `SwipeableTabs` with a strict `MindMapTabIndex` conflict guard reserving central canvas touch for panning while allowing edge (<24dp) and header swipes for tab changes.
+  3. Introduced active-orbit culling in `metadata_view` and `mindmap_radial`, laying out only the focused node and direct children while lazy-loading sub-levels.
+  4. Added `GraphicPrimitivePool` (sync.Pool for Circle, Line, Text) and `LRUThumbnailCache` for zero-allocation redraws and smooth image previews.
+  5. Built automated dual-snapshot daily backups (JSON + SQLite) with rolling 7-day pruning.
+- **Rationale:** Brings true native mobile fluency, responsive navigation, and rock-solid offline reliability to Android and desktop viewports.
 

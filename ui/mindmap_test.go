@@ -58,3 +58,4 @@ func TestCalculateRadialPositions(t *testing.T) {
 		t.Fatalf("expected node 2 near (100, 200), got (%f, %f)", pos4[2].X, pos4[2].Y)
 	}
 }
+

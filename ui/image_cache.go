@@ -205,3 +205,4 @@ func GenerateTestDummyImage(path string, width, height int, col color.Color) err
 	defer f.Close()
 	return jpeg.Encode(f, img, &jpeg.Options{Quality: 80})
 }
+

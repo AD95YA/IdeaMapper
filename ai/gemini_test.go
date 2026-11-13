@@ -23,3 +23,4 @@ func TestGenerateIdeasWithKey_Validation(t *testing.T) {
 		t.Fatalf("expected error from GenerateIdeas without key")
 	}
 }
+

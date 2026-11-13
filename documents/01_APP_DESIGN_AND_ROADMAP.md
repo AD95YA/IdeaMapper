@@ -52,26 +52,53 @@ Human brains think associatively and hierarchically. Standard note-taking softwa
 
 ---
 
-## 3. V2 Roadmap (Near-Term Enhancements)
+## 3. V2 Scope (Delivered & Verified)
 
-- [ ] **Interactive Visual Graph Canvas**:
-  - Implement a 2D node-and-edge visual graph canvas inside the **Mind Map** tab (similar to Obsidian Graph View or Mindly's circular planetary layout).
-  - Drag-and-drop nodes, pinch-to-zoom, and visual clustering of connected thoughts.
-- [ ] **Automated Google Drive OAuth2 Sync**:
-  - Complete the client credential exchange in `api/gdrive.go` to provide automated background cloud snapshots on Wi-Fi.
-- [ ] **Full-Text Search (SQLite FTS5)**:
-  - Integrate SQLite FTS5 virtual tables to index all Idea descriptions, Memory narratives, and nested MetaData nodes for millisecond fuzzy search.
-- [ ] **Rich Markdown Rendering**:
-  - Render GitHub-flavored markdown in Idea and Memory detail views (checklists, headers, bullet points, and code syntax highlighting).
-- [ ] **Theme Customization**:
-  - Support Light, Dark, Solarized, and AMOLED Black themes using Fyne theme overrides.
-- [ ] **Biometric / PIN Security**:
-  - Optional local PIN or biometric unlock (on Android) to protect private journal entries and sensitive memories.
+- [x] **Mobile Navigation & Breadcrumbs (`ui/nav_stack.go`)**:
+  - Unified persistent `<` (Back) and `⌂` (Home) controls across all views.
+  - Android hardware/gesture back key interception (`KeyEscape`) mapping to stack traversal.
+  - Horizontally scrollable breadcrumb trail (`container.NewHScroll`) supporting deep hierarchies up to 6 levels without clipping.
+- [x] **Swipeable Tabs & Conflict Guard (`ui/swipe_container.go`)**:
+  - Horizontal drag gesture switching across all 4 tabs (`Ideas` ↔ `Memories` ↔ `Mind Map` ↔ `Settings`).
+  - Gesture conflict guard on the Mind Map tab reserving center canvas drag for panning while allowing edge-swipes (`< 24dp`) and header swipes for tab navigation.
+- [x] **Performance & Memory Optimization (`ui/widget_pool.go`, `ui/image_cache.go`, `ui/metadata_view.go`)**:
+  - Active-orbit culling: only focused nodes and direct children are laid out; deep descendant sub-trees lazy-load on demand.
+  - Zero-allocation graphic primitive pooling (`CirclePool`, `LinePool`, `TextPool`).
+  - Async thumbnail downscaling (128x128 for orbit nodes, 512x512 for detail views) with a bounded 50-item LRU cache.
+- [x] **Upgraded Mind Map UI (`ui/mindmap_ascii.go`, `ui/mindmap_radial.go`, `ui/links_view.go`)**:
+  - Rich Unicode box-drawing tree view with status badges: `[★]` Starred, `[📝]` Notes, `[🖼️]` Attachments, `[⏳]` Solo/Unlinked thought.
+  - Radial orbit overlay with directional connector lines and depth-graded accent colors (Levels 1–6).
+  - 3-way top view switcher: Box-Drawing Tree, Radial Orbit, and Connection Cards.
+- [x] **Automated Daily Local & SQLite Backups (`api/backup_scheduler.go`, `ui/settings.go`)**:
+  - Startup and resume scheduler automatically creating daily JSON snapshots and raw SQLite `.db` clones.
+  - Rolling 7-day retention policy auto-pruning older archives.
+  - Manual "Backup Now" trigger and last backup status in Settings.
+- [x] **First-Launch JSON Onboarding Restore (`ui/onboarding.go`)**:
+  - Clean onboarding dialog prompting first-time users to restore an existing JSON backup or start fresh with a starter topic.
+- [x] **Google Sign-In & Drive Sync Preview (`api/google_auth.go`, `ui/settings.go`)**:
+  - Google OAuth profile caching and signed-in status display with Sign Out option.
+  - "Google Drive Cloud Sync — Coming Soon" informational modal.
+- [x] **Gemini API Onboarding & Copyable Prompt (`ui/settings.go`)**:
+  - Expandable 3-step guide for getting a free Gemini API key from Google AI Studio.
+  - Read-only prompt template preview with one-tap "Copy Prompt" clipboard action.
+- [x] **Comprehensive Test Suite & V2 Release (`releases/ideamapper-v2.apk`)**:
+  - Complete edge-case unit test coverage passing with `-race` across all packages.
+  - Release-ready universal APK package built via `./scripts/build_and_release_apk.sh v2`.
 
 ---
 
-## 4. V3 Roadmap (Long-Term Architectural Vision)
+## 4. V3 Roadmap (Future Architectural Vision)
 
+- [ ] **Automated Google Drive OAuth2 Sync**:
+  - Complete background cloud upload via Drive AppData API.
+- [ ] **Full-Text Search (SQLite FTS5)**:
+  - Virtual tables indexing all descriptions, notes, and attachment metadata.
+- [ ] **Rich Markdown Rendering**:
+  - GitHub-flavored markdown with checklists and code blocks.
+- [ ] **Theme Customization**:
+  - Dark, Light, Solarized, and AMOLED Black themes.
+- [ ] **Biometric / PIN Security**:
+  - Local biometric unlock on Android for sensitive memories.
 - [ ] **End-to-End Encrypted Peer-to-Peer Sync**:
   - Decentralized local sync between desktop and mobile devices via local network Wi-Fi or WebDAV/libp2p without central servers.
 - [ ] **Voice-to-Thought Audio Journaling**:
@@ -80,6 +107,4 @@ Human brains think associatively and hierarchically. Standard note-taking softwa
   - Generate local vector embeddings using small on-device models (e.g., Gemma / Ollama) for semantic concept clustering ("find thoughts related to sustainability").
 - [ ] **Universal Export & Interoperability**:
   - Export entire knowledge graphs to standard open formats: Obsidian Markdown Vaults, OPML, GraphML, and printable PDF digests.
-- [ ] **Spatial Planetary Navigation (Mindly Classic Paradigm)**:
-  - Implement an orbit-based zoom navigation where clicking a parent node centers it as a sun with child sub-thoughts orbiting around it.
 

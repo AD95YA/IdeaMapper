@@ -127,3 +127,4 @@ func TestRunDailyBackup_FullRoundtrip(t *testing.T) {
 		t.Fatalf("expected non-empty DB backup file")
 	}
 }
+

@@ -17,3 +17,4 @@ func TestOnboarding_CorruptedJSONRejection(t *testing.T) {
 		t.Fatalf("expected 0 imported items on corrupted payload, got %d, %d", ideas, mems)
 	}
 }
+

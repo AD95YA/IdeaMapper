@@ -161,3 +161,8 @@
 - **Command:** `go test -v ./ui`
 - **Exit Code:** `0`
 - **Summary:** Milestone 2: Implemented active-orbit culling in metadata_view, GraphicPrimitivePool (circle, line, text pooling), and LRUThumbnailCache with async decoding. All unit tests passed.
+
+### [2026-11-13T13:59:03Z] Command Execution
+- **Command:** `go test -v ./ui`
+- **Exit Code:** `0`
+- **Summary:** Milestone 3: Upgraded Mind Map UI with Rich Box-Drawing ASCII Tree (badges [★], [📝], [🖼️], [⏳]), Radial Orbit view with depth-graded accent colors, and 3-way view switcher in links_view.

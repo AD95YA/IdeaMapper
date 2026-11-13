@@ -186,3 +186,8 @@
 - **Command:** `go test -v -race ./...`
 - **Exit Code:** `0`
 - **Summary:** Milestone 6: Verified zero race conditions across all packages (ai, api, db, ui), verified V2 APK build, and finalized living documentation.
+
+### [2026-11-13T14:13:23Z] Build & Publish Android APK (v1)
+- **App:** IdeaMapper (`app`)
+- **Command:** `./scripts/build_and_release_apk.sh v1`
+- **Artifact:** `releases/ideamapper-v1.apk` (MAJOR (Permanent Artifact))

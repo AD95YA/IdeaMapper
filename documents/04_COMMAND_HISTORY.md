@@ -156,3 +156,8 @@
 - **Command:** `go test -v ./ui`
 - **Exit Code:** `0`
 - **Summary:** Milestone 1: Implemented NavigationManager, persistent Back/Home buttons, scrollable breadcrumb header, swipeable tabs, and Mind Map conflict guard. All tests pass.
+
+### [2026-11-13T13:56:10Z] Command Execution
+- **Command:** `go test -v ./ui`
+- **Exit Code:** `0`
+- **Summary:** Milestone 2: Implemented active-orbit culling in metadata_view, GraphicPrimitivePool (circle, line, text pooling), and LRUThumbnailCache with async decoding. All unit tests passed.

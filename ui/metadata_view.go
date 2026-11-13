@@ -65,6 +65,13 @@ func renderMetaDataNode(parentBox *fyne.Container, w fyne.Window, m *models.Meta
 		attachObjects = append(attachObjects, attachLabel)
 	}
 
+	// Attachment previews (async thumbnail loading for images)
+	for _, p := range m.PhotoPaths {
+		path := p
+		thumb := CreateAsyncImageWidget(path, 128)
+		attachObjects = append(attachObjects, container.NewHBox(widget.NewLabel(indentPrefix+"    📷 "), thumb))
+	}
+
 	btnBox := container.NewHBox(
 		widget.NewLabel(indentPrefix),
 	)
@@ -109,10 +116,76 @@ func renderMetaDataNode(parentBox *fyne.Container, w fyne.Window, m *models.Meta
 
 	parentBox.Add(nodeBox)
 
-	// Recursively render child sub-metadata
-	for _, sub := range m.SubMetaData {
-		renderMetaDataNode(parentBox, w, sub, onRefresh)
+	// Active-Orbit Culling: Collapse sub-trees by default; allocate widgets only on expansion or drill-down
+	if len(m.SubMetaData) > 0 {
+		subBox := container.NewVBox()
+		isExpanded := false
+
+		var expandBtn *widget.Button
+		expandBtn = widget.NewButtonWithIcon(fmt.Sprintf("[%d Sub-Thoughts]", len(m.SubMetaData)), theme.MenuDropDownIcon(), func() {
+			isExpanded = !isExpanded
+			subBox.Objects = nil
+			if isExpanded {
+				expandBtn.SetIcon(theme.MenuDropUpIcon())
+				for _, sub := range m.SubMetaData {
+					renderMetaDataNode(subBox, w, sub, onRefresh)
+				}
+			} else {
+				expandBtn.SetIcon(theme.MenuDropDownIcon())
+			}
+			subBox.Refresh()
+		})
+		expandBtn.Importance = widget.LowImportance
+
+		focusBtn := widget.NewButtonWithIcon("Focus Orbit ➔", theme.NavigateNextIcon(), func() {
+			drillView := BuildFocusedOrbitView(w, m, onRefresh)
+			GetNavManager(w).Push(NavEntry{
+				Title:       m.Title,
+				Breadcrumbs: []string{fmt.Sprintf("L%d: %s", m.Level, m.Title)},
+				View:        drillView,
+			})
+		})
+		focusBtn.Importance = widget.LowImportance
+
+		orbitRow := container.NewHBox(widget.NewLabel(indentPrefix+"   "), expandBtn, focusBtn)
+		nodeBox.Add(orbitRow)
+		nodeBox.Add(subBox)
 	}
+}
+
+// BuildFocusedOrbitView renders a dedicated screen for focusing on a sub-thought and its direct children
+func BuildFocusedOrbitView(w fyne.Window, m *models.MetaData, onRefresh func()) fyne.CanvasObject {
+	vbox := container.NewVBox()
+
+	titleCard := widget.NewCard(fmt.Sprintf("Level %d: %s", m.Level, m.Title), "", widget.NewLabel(m.Description))
+	vbox.Add(titleCard)
+	vbox.Add(widget.NewSeparator())
+
+	childBox := container.NewVBox()
+	subList, _ := db.GetMetaDataForParent(m.ID, "MetaData")
+	if len(subList) == 0 {
+		childBox.Add(widget.NewLabelWithStyle("No nested sub-thoughts in this orbit yet.", fyne.TextAlignCenter, fyne.TextStyle{Italic: true}))
+	} else {
+		for _, sub := range subList {
+			renderMetaDataNode(childBox, w, sub, onRefresh)
+		}
+	}
+
+	addChildBtn := widget.NewButtonWithIcon("Add Child Sub-Thought", theme.ContentAddIcon(), func() {
+		ShowAddMetaDataModal(w, m.ID, "MetaData", m.Level+1, func() {
+			onRefresh()
+			GetNavManager(w).UpdateCurrentView(BuildFocusedOrbitView(w, m, onRefresh))
+		})
+	})
+
+	topRow := container.NewHBox(
+		widget.NewLabelWithStyle("Orbit Children", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		layoutSpacer(),
+		addChildBtn,
+	)
+
+	body := container.NewVBox(topRow, childBox)
+	return container.NewVScroll(container.NewVBox(vbox, body))
 }
 
 func ShowAddMetaDataModal(w fyne.Window, parentID string, parentType string, level int, onSaved func()) {
